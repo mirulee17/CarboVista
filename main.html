@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biomass Analysis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Leaflet Draw CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"
+    />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <a href="index.html" class="back-btn">
+            ← Back
+        </a>
+        <h2>Biomass Analysis Dashboard</h2>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Analysis Panel</h3>
+
+            <button id="drawBoxBtn" class="btn">
+                Draw Bounding Box
+            </button>
+
+            <button id="runBtn" class="btn">
+                Run Analysis
+            </button>
+
+            <!-- AOI Info -->
+            <div class="aoi-info">
+                <h4>Selected AOI</h4>
+                <p id="aoiText">No area selected</p>
+            </div>
+
+            <!-- Navigation -->
+            <div class="analysis-actions">
+                <a href="dashboard.html" class="btn">
+                    View Analysis Dashboard
+                </a>
+            </div>
+        </aside>
+
+        <!-- Map -->
+        <div id="map"></div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Leaflet Draw JS -->
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+
+    <!-- Main JS -->
+    <script src="js/main.js"></script>
+
+</body>
+</html>

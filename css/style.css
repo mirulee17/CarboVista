@@ -1,0 +1,216 @@
+/* ================= ROOT THEME ================= */
+
+:root {
+    --primary-green: #2f7d32;
+    --accent-green: #66bb6a;
+    --dark-green: #1b5e20;
+    --light-green: #e8f5e9;
+    --soft-bg: #f4faf5;
+    --card-bg: #ffffff;
+    --border-soft: #d9e6db;
+    --text-dark: #2c2c2c;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--soft-bg);
+    color: var(--text-dark);
+}
+
+/* ================= BUTTONS (INTERACTIVE) ================= */
+
+.btn {
+    background: linear-gradient(135deg, var(--primary-green), var(--accent-green));
+    color: white;
+    padding: 12px 18px;
+    text-decoration: none;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.25s ease;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* ================= NAVBAR / TOPBAR ================= */
+
+.navbar,
+.topbar {
+    background: linear-gradient(135deg, #1b5e20, #2f7d32);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* ================= LANDING PAGE ================= */
+
+.hero {
+    padding: 100px 30px;
+    text-align: center;
+    background: linear-gradient(
+        rgba(46, 125, 50, 0.85),
+        rgba(27, 94, 32, 0.9)
+    ),
+    url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6");
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.hero h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    font-size: 16px;
+    max-width: 650px;
+    margin: auto;
+    opacity: 0.95;
+}
+
+.hero-btn {
+    margin-top: 30px;
+}
+
+/* Floating card effect */
+.info {
+    padding: 45px;
+    background: var(--card-bg);
+    border-radius: 14px;
+    margin: -50px auto 50px auto;
+    max-width: 900px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s ease;
+}
+
+.info:hover {
+    transform: translateY(-6px);
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--dark-green);
+    color: white;
+    font-size: 14px;
+}
+
+/* ================= MAP SYSTEM PAGE ================= */
+
+.container {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+/* Sidebar (Interactive Panel) */
+.sidebar {
+    width: 290px;
+    padding: 25px;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-soft);
+    box-shadow: 3px 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    color: var(--primary-green);
+}
+
+.sidebar .btn {
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+/* AOI Status Card */
+.aoi-info {
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--light-green);
+    border-left: 6px solid var(--primary-green);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+
+/* Map */
+#map {
+    flex: 1;
+    border-left: 2px solid #e0e0e0;
+}
+
+/* ================= DASHBOARD PAGE ================= */
+
+.dashboard-container {
+    padding: 35px;
+}
+
+.dashboard-header h3 {
+    color: var(--primary-green);
+}
+
+/* Card-style dashboard */
+.dashboard-content {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 14px;
+    min-height: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Power BI Placeholder */
+.powerbi-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 450px;
+    border: 2px dashed var(--accent-green);
+    border-radius: 12px;
+    color: var(--dark-green);
+    font-size: 16px;
+    background: var(--light-green);
+}
+
+/* Actions */
+.dashboard-actions,
+.analysis-actions {
+    margin-top: 25px;
+}
+
+/* ================= BACK BUTTON ================= */
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(-3px);
+}
