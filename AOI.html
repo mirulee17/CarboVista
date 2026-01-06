@@ -7,29 +7,28 @@
 
     <!-- Leaflet CSS -->
     <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
 
     <!-- Leaflet Draw CSS -->
     <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"
     />
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 </head>
+
 <body class="app">
 
     <!-- Top Bar -->
     <div class="topbar">
-        <a href="index.html" class="back-btn">
-            ← Back
-        </a>
+        <a href="landing.html" class="back-btn">← Back</a>
         <h2>Biomass Analysis Dashboard</h2>
     </div>
 
@@ -44,7 +43,7 @@
                 Draw Bounding Box
             </button>
 
-            <button id="runBtn" class="btn">
+            <button id="runBtn" class="btn" disabled>
                 Run Analysis
             </button>
 
@@ -72,8 +71,11 @@
     <!-- Leaflet Draw JS -->
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
-    <!-- Main JS -->
-    <script src="js/main.js"></script>
+    <!-- Leaflet Point-in-Polygon (REQUIRED) -->
+    <script src="https://unpkg.com/leaflet-pip@1.1.0/leaflet-pip.min.js"></script>
+
+    <!-- AOI Logic -->
+    <script src="js/AOI.js"></script>
 
 </body>
 </html>

@@ -273,3 +273,48 @@ body.landing {
     50% { transform: translateY(-18px); }
     100% { transform: translateY(0); }
 }
+/* ================= DISABLED BUTTON STATE ================= */
+button:disabled,
+.btn:disabled {
+    background-color: #555;          /* muted */
+    color: #aaa;                     /* grey text */
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* Optional: hover should NOT change disabled button */
+button:disabled:hover,
+.btn:disabled:hover {
+    background-color: #555;
+}
+/* ================= ENABLED RUN BUTTON ================= */
+.btn.enabled {
+    background-color: #2f7d32;   /* same green */
+    color: #fff;
+    cursor: pointer;
+    opacity: 1;
+}
+/* ================= LEAFLET DRAW TOOLTIP VISIBILITY FIX ================= */
+
+/* Main tooltip container */
+.leaflet-draw-tooltip {
+    background: rgba(0, 0, 0, 0.85) !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    border: none;
+}
+
+/* Tooltip arrow */
+.leaflet-draw-tooltip:before {
+    border-top-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Our km² area text (from JS formatter) */
+.leaflet-draw-tooltip span {
+    color: inherit;
+}
