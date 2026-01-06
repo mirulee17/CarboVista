@@ -5,18 +5,21 @@
     <title>Biomass Estimation System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <!-- Poppins for system branding -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tiemos-style substitute for headline -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+
+<body class="landing">
 
     <!-- NAVBAR -->
     <header class="navbar">
-        <h1>Biomass Estimation System</h1>
-        <a href="main.html" class="btn">Launch System</a>
+        <h1 class="brand-title">Biomass Estimation System</h1>
     </header>
 
     <!-- HERO SECTION -->
@@ -24,7 +27,7 @@
 
         <!-- LEFT CONTENT -->
         <div class="hero-text">
-            <h2>
+            <h2 class="hero-headline">
                 Web-Based<br>
                 Tree Biomass Estimation
             </h2>
@@ -34,24 +37,34 @@
                 biomass and carbon stock using Sentinel-2 satellite imagery
                 and machine learning models.
             </p>
-
-            <a href="main.html" class="btn hero-btn">
-                Start Analysis
-            </a>
         </div>
 
-        <!-- RIGHT IMAGE (TREES) -->
-        <div class="hero-image">
-            <img
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e"
-                alt="Forest and trees"
+        <!-- RIGHT ILLUSTRATION (TREE SVG) -->
+        <div class="hero-image tree-illustration">
+            <svg
+                class="tree-svg"
+                viewBox="0 0 240 260"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Tree illustration"
             >
+                <!-- Canopy -->
+                <circle cx="120" cy="90" r="55" fill="#3cbfa1"/>
+                <circle cx="80" cy="100" r="40" fill="#2a8f79"/>
+                <circle cx="160" cy="100" r="40" fill="#2a8f79"/>
+                <circle cx="120" cy="60" r="35" fill="#5fb69a"/>
+
+                <!-- Trunk -->
+                <rect x="108" y="130" width="24" height="80" rx="8" fill="#2f4f48"/>
+
+                <!-- Shadow -->
+                <ellipse cx="120" cy="220" rx="50" ry="10" fill="rgba(0,0,0,0.25)"/>
+            </svg>
         </div>
 
     </section>
 
-    <!-- OVERVIEW SECTION -->
-    <section class="info">
+    <!-- PROJECT OVERVIEW (CENTRALIZED) -->
+    <section class="info landing-overview">
         <h3>Project Overview</h3>
         <p>
             This web application allows users to define an Area of Interest (AOI)
@@ -60,6 +73,11 @@
             analysis.
         </p>
     </section>
+
+    <!-- FLOATING ACTION BUTTON -->
+    <a href="main.html" class="fab-launch">
+        Launch System
+    </a>
 
     <!-- FOOTER -->
     <footer class="footer">

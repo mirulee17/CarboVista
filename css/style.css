@@ -28,18 +28,23 @@
 body {
     margin: 0;
     font-family: "Inter", system-ui, sans-serif;
+}
+
+/* ==================================================
+   ================== APP MODE ======================
+================================================== */
+
+body.app {
     background: var(--bg-main);
     color: var(--text-main);
     overflow: hidden;
     font-size: 13px;
 }
 
-/* ==================================================
-   TOP BAR (KEPLER STYLE – FIXED HEIGHT)
-================================================== */
+/* ================= TOP BAR ================= */
 
-.topbar {
-    height: 56px; /* match container calc */
+.app .topbar {
+    height: 56px;
     background: var(--bg-panel);
     display: flex;
     align-items: center;
@@ -48,44 +53,37 @@ body {
     border-bottom: 1px solid var(--border-soft);
 }
 
-.topbar h2 {
+.app .topbar h2 {
     font-size: 14px;
     font-weight: 600;
     margin: 0;
-    color: var(--text-main);
-    letter-spacing: 0.3px;
 }
 
-/* Back button – minimal, tool-like */
-.back-btn {
+/* Back button */
+.app .back-btn {
     background: none;
     color: var(--text-muted);
     padding: 6px 10px;
     border-radius: 4px;
     font-size: 12px;
     text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
 }
 
-.back-btn:hover {
+.app .back-btn:hover {
     background: var(--bg-hover);
     color: var(--text-main);
 }
 
-/* ==================================================
-   MAIN LAYOUT
-================================================== */
+/* ================= LAYOUT ================= */
 
-.container {
+.app .container {
     display: flex;
     height: calc(100vh - 56px);
 }
 
-/* ==================================================
-   LEFT SIDEBAR (FILTER PANEL – KEPLER-LIKE)
-================================================== */
+/* ================= SIDEBAR ================= */
 
-.sidebar {
+.app .sidebar {
     width: 260px;
     background: var(--bg-panel);
     border-right: 1px solid var(--border-soft);
@@ -95,118 +93,183 @@ body {
     gap: 14px;
 }
 
-/* Section title */
-.sidebar h3 {
+.app .sidebar h3 {
     font-size: 13px;
     font-weight: 600;
-    margin: 0 0 6px 0;
-    color: var(--text-main);
     text-transform: uppercase;
     letter-spacing: 0.6px;
 }
 
-/* ==================================================
-   BUTTONS (FLAT TOOL STYLE)
-================================================== */
+/* ================= BUTTONS ================= */
 
-.btn {
+.app .btn {
     width: 100%;
     background: var(--accent-soft);
-    color: #ffffff;
+    color: #fff;
     border: none;
     padding: 10px 12px;
     font-size: 12px;
-    font-weight: 500;
     border-radius: 6px;
     cursor: pointer;
-    text-align: center;
-    transition: background 0.15s ease;
 }
 
-.btn:hover {
+.app .btn:hover {
     background: var(--accent);
 }
 
-/* ==================================================
-   AOI INFO CARD (DATA PANEL)
-================================================== */
+/* ================= AOI CARD ================= */
 
-.aoi-info {
+.app .aoi-info {
     background: var(--bg-panel-2);
     border: 1px solid var(--border-soft);
     border-radius: 6px;
     padding: 12px;
     font-size: 12px;
     color: var(--text-muted);
-    line-height: 1.5;
 }
 
-.aoi-info h4 {
-    margin: 0 0 6px 0;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-main);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-}
+/* ================= MAP ================= */
 
-/* Push dashboard button to bottom */
-.analysis-actions {
-    margin-top: auto;
-}
-
-/* ==================================================
-   MAP AREA (DOMINANT)
-================================================== */
-
-#map {
+.app #map {
     flex: 1;
     background: #0b1412;
 }
 
-/* ==================================================
-   LANDING PAGE (HIDDEN FOR TOOL MODE)
-================================================== */
+/* ================= DASHBOARD ================= */
 
-.hero,
-.footer,
-.info {
-    display: none;
-}
-
-/* ==================================================
-   DASHBOARD PAGE (CONSISTENT WITH MAP UI)
-================================================== */
-
-.dashboard-container {
+.app .dashboard-container {
     padding: 16px;
     height: calc(100vh - 56px);
 }
 
-.dashboard-header h3 {
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 12px 0;
-    color: var(--text-main);
-    letter-spacing: 0.3px;
-}
-
-.dashboard-content {
+.app .dashboard-content {
     background: var(--bg-panel);
     border: 1px solid var(--border-soft);
     border-radius: 6px;
     padding: 16px;
-    height: calc(100% - 40px);
 }
 
-/* Power BI placeholder */
-.powerbi-placeholder {
-    height: 100%;
-    border: 1px dashed var(--border-soft);
-    border-radius: 6px;
+/* ==================================================
+   ================= LANDING MODE ===================
+================================================== */
+
+body.landing {
+    background: radial-gradient(circle at top, #2f6f5f, #0f1f1c 70%);
+    color: var(--text-main);
+}
+
+/* ================= NAVBAR ================= */
+
+.landing .navbar {
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* System title – POPPINS */
+.landing .navbar h1 {
+    font-family: "Poppins", system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* ================= HERO ================= */
+
+.landing .landing-hero {
+    height: calc(100vh - 100px);
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 120px;
+    padding: 0 80px;
+}
+
+.landing .hero-text {
+    max-width: 520px;
+}
+
+/* Headline – TIEMPOS STYLE (Playfair Display) */
+.landing .hero-text h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+}
+
+.landing .hero-text p {
+    font-size: 16px;
     color: var(--text-muted);
-    font-size: 12px;
+    margin-bottom: 32px;
+}
+
+/* ================= TREE ILLUSTRATION ================= */
+
+.landing .tree-svg {
+    width: 420px;
+    animation: floatTree 6s ease-in-out infinite;
+    filter: drop-shadow(0 40px 80px rgba(0,0,0,0.35));
+}
+
+/* ================= PROJECT OVERVIEW ================= */
+
+.landing .info {
+    max-width: 760px;
+    margin: 80px auto 120px auto;
+    text-align: center;
+}
+
+.landing .info h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.landing .info p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+}
+
+/* ================= FLOATING LAUNCH BUTTON ================= */
+
+.landing .fab-launch {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
+    z-index: 1000;
+
+    background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing .fab-launch:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.45);
+}
+
+/* ================= FOOTER ================= */
+
+.landing .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-muted);
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes floatTree {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+    100% { transform: translateY(0); }
 }
