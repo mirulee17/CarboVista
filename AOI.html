@@ -21,14 +21,17 @@
     <link rel="stylesheet" href="css/style.css">
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
 </head>
 
 <body class="app">
 
     <!-- Top Bar -->
     <div class="topbar">
-        <a href="landing.html" class="back-btn">← Back</a>
+        <a href="index.html" class="back-btn">← Back</a>
         <h2>Biomass Analysis Dashboard</h2>
     </div>
 
@@ -39,6 +42,47 @@
         <aside class="sidebar">
             <h3>Analysis Panel</h3>
 
+            <!-- LOCATION SEARCH -->
+            <div class="location-panel">
+                <h4>Find Location</h4>
+
+                <input
+                    type="text"
+                    id="locationSearch"
+                    placeholder="e.g. Bangsar, Kuala Lumpur or 48000"
+                    autocomplete="off"
+                />
+
+                <p class="hint">
+                    Used to navigate the map only.<br>
+                    You must still draw a bounding box.
+                </p>
+            </div>
+
+            <!-- DATE SELECTION -->
+            <div class="date-panel">
+                <h4>Time Period</h4>
+
+                <label for="startDate">Start date</label>
+                <input
+                    type="date"
+                    id="startDate"
+                    min="2017-01-01"
+                />
+
+                <label for="endDate">End date</label>
+                <input
+                    type="date"
+                    id="endDate"
+                />
+
+                <p class="hint">
+                    Range: 30 days – 12 months<br>
+                    Sentinel-2 available from 2017 onward
+                </p>
+            </div>
+
+            <!-- AOI ACTIONS -->
             <button id="drawBoxBtn" class="btn">
                 Draw Bounding Box
             </button>
@@ -55,7 +99,7 @@
 
             <!-- Navigation -->
             <div class="analysis-actions">
-                <a href="dashboard.html" class="btn">
+                <a href="dashboard.html" class="btn secondary">
                     View Analysis Dashboard
                 </a>
             </div>
@@ -71,10 +115,13 @@
     <!-- Leaflet Draw JS -->
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
-    <!-- Leaflet Point-in-Polygon (REQUIRED) -->
+    <!-- Leaflet Point-in-Polygon -->
     <script src="https://unpkg.com/leaflet-pip@1.1.0/leaflet-pip.min.js"></script>
 
-    <!-- AOI Logic -->
+    <!-- Leaflet Geocoder (logic-only, no UI control) -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <!-- AOI + Date + Location Logic -->
     <script src="js/AOI.js"></script>
 
 </body>
