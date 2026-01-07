@@ -5,44 +5,88 @@
     <title>Analysis Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
 </head>
+
 <body class="app">
 
-    <!-- Top Bar -->
-    <div class="topbar">
-        <a href="AOI.html" class="back-btn">
-            ← Back
-        </a>
-        <h2>Biomass Analysis Dashboard</h2>
+<div class="topbar">
+    <a href="AOI.html" class="back-btn">← Back</a>
+    <h2>Biomass Analysis Dashboard</h2>
+</div>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <h3>Spatial Tree Carbon Prediction</h3>
+        <p>Pixel-wise estimation of above-ground carbon per tree (kg C)</p>
     </div>
 
+    <!-- KPI SUMMARY ROW -->
+    <div class="kpi-row">
 
-    <div class="dashboard-container">
-
-        <div class="dashboard-header">
-            <h3>Analysis Results & Visualization</h3>
-            <p>
-                This dashboard presents biomass estimation results
-                and summary statistics generated from the selected AOI.
-            </p>
-        </div>
-
-        <!-- Power BI Embed Section -->
-        <div class="dashboard-content">
-
-            <!-- PLACEHOLDER (Power BI will go here) -->
-            <div class="powerbi-placeholder">
-                <p>Power BI Dashboard will be embedded here</p>
+        <div class="kpi-card">
+            <div class="kpi-title">Mean Tree Carbon</div>
+            <div class="kpi-value">
+                <span id="mean">–</span>
+                <span class="kpi-unit">kg C</span>
             </div>
+        </div>
 
+        <div class="kpi-card">
+            <div class="kpi-title">Total Carbon (AOI)</div>
+            <div class="kpi-value">
+                <span id="total">–</span>
+                <span class="kpi-unit">kg C</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-title">Analysed Pixels</div>
+            <div class="kpi-value">
+                <span id="area">–</span>
+                <span class="kpi-unit">pixels</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-title">Range</div>
+            <div class="kpi-value small">
+                <span id="min">–</span> – <span id="max">–</span>
+                <span class="kpi-unit">kg C</span>
+            </div>
         </div>
 
     </div>
+
+    <!-- MAP -->
+    <div id="map" style="height: 520px; border-radius: 12px;"></div>
+
+    <!-- ANALYTICS ROW -->
+    <div class="analytics-row">
+
+        <!-- HISTOGRAM -->
+        <div class="panel">
+            <h4>Tree Carbon Distribution</h4>
+            <canvas id="acdHistogram"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/dashboard.js"></script>
 
 </body>
 </html>
