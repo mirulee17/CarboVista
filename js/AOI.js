@@ -114,8 +114,16 @@ function validateDates(showAlert = false) {
     updateRunButton();
 }
 
-startDate?.addEventListener("change", () => validateDates(true));
-endDate?.addEventListener("change", () => validateDates(true));
+startDate?.addEventListener("change", () => {
+    localStorage.setItem("startDate", startDate.value);
+    validateDates(true);
+});
+
+endDate?.addEventListener("change", () => {
+    localStorage.setItem("endDate", endDate.value);
+    validateDates(true);
+});
+
 
 // ================= LOCATION SEARCH (SIDEBAR – STABLE) =================
 const locationInput = document.getElementById("locationSearch");
@@ -239,6 +247,23 @@ map.on(L.Draw.Event.CREATED, e => {
         area_km2: area
     };
 
+    // 🔑 Store AOI polygon for backend
+const aoiPolygon = [[
+    [selectedAOI.west, selectedAOI.north],
+    [selectedAOI.east, selectedAOI.north],
+    [selectedAOI.east, selectedAOI.south],
+    [selectedAOI.west, selectedAOI.south],
+    [selectedAOI.west, selectedAOI.north]
+]];
+
+// 🔑 Always overwrite AOI
+localStorage.setItem("aoi", JSON.stringify(aoiPolygon));
+
+// 🔑 Clear any previous analysis tied to old AOI
+localStorage.removeItem("analysisResult");
+localStorage.removeItem("aoiBounds");
+
+
     isAOIValid = true;
     updateRunButton();
 
@@ -252,7 +277,50 @@ map.on(L.Draw.Event.CREATED, e => {
 });
 
 // ================= RUN =================
-runBtn.addEventListener("click", () => {
+runBtn.addEventListener("click", async () => {
     if (!(isAOIValid && isDateValid)) return;
-    window.location.href = "dashboard.html";
+
+    runBtn.disabled = true;
+    runBtn.textContent = "Running analysis...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/run-analysis", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                aoi: JSON.parse(localStorage.getItem("aoi")),
+                start_date: localStorage.getItem("startDate"),
+                end_date: localStorage.getItem("endDate")
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Backend analysis failed");
+        }
+
+        const data = await response.json();
+
+        // ✅ STORE RESULTS
+        localStorage.setItem("analysisResult", JSON.stringify(data));
+
+        // Optional: store AOI bounds for dashboard
+        localStorage.setItem(
+            "aoiBounds",
+            JSON.stringify([
+                [selectedAOI.south, selectedAOI.west],
+                [selectedAOI.north, selectedAOI.east]
+            ])
+        );
+
+        // ✅ REDIRECT ONLY AFTER DATA EXISTS
+        window.location.href = "dashboard.html";
+
+    } catch (err) {
+        console.error(err);
+        alert("Failed to run analysis. Please try again.");
+        runBtn.disabled = false;
+        runBtn.textContent = "Run Analysis";
+    }
 });

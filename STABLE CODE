@@ -1,21 +1,37 @@
-// ================= GLOBAL AOI STORAGE =================
+// ================= OVERRIDE LEAFLET AREA FORMATTER =================
+// Must be defined BEFORE draw control is created
+L.GeometryUtil.readableArea = function (area) {
+    const areaKm2 = area / 1e6;
+    const color = areaKm2 > 2 ? "#ff4d4d" : "#2f7d32";
+
+    return `
+        <span style="color:${color}; font-weight:600">
+            Area: ${areaKm2.toFixed(2)} km²
+        </span>
+    `;
+};
+
+// ================= GLOBAL STATE =================
 let selectedAOI = null;
 let isAOIValid = false;
-const MAX_AREA_KM2 = 2;
+let isDateValid = false;
 
-// ================= INITIALIZE MAP =================
+const MAX_AREA_KM2 = 2;
+const MIN_RANGE_DAYS = 30;
+const MAX_RANGE_DAYS = 365;
+const MIN_START_DATE = new Date("2017-01-01");
+
+// ================= MAP INITIALIZATION =================
 const map = L.map("map").setView([3.1390, 101.6869], 10);
 
-// ================= BASEMAP =================
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
 }).addTo(map);
 
-// ================= DRAWN ITEMS GROUP =================
 const drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
-// ================= MALAYSIA POLYGON =================
+// ================= MALAYSIA BOUNDARY =================
 let malaysiaLayer = null;
 let malaysiaLoaded = false;
 
@@ -38,8 +54,8 @@ const drawControl = new L.Control.Draw({
         circlemarker: false,
         rectangle: {
             shapeOptions: { color: "#2f7d32" },
-            showArea: false,   // disable default ha tooltip
-            metric: false
+            showArea: true,
+            metric: true
         }
     },
     edit: {
@@ -48,97 +64,105 @@ const drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
-// ================= AREA CALCULATION (km²) =================
+// ================= HELPERS =================
 function calculateAreaKm2(bounds) {
     const sw = bounds.getSouthWest();
     const ne = bounds.getNorthEast();
     return Math.abs((ne.lat - sw.lat) * (ne.lng - sw.lng)) * 111 * 111;
 }
 
-// ================= MALAYSIA CONTAINMENT CHECK =================
 function isPointInMalaysia(latlng) {
     return leafletPip.pointInLayer(latlng, malaysiaLayer).length > 0;
 }
 
 function isAOIInsideMalaysia(bounds) {
-    const corners = [
+    return [
         bounds.getNorthWest(),
         bounds.getNorthEast(),
         bounds.getSouthWest(),
         bounds.getSouthEast()
-    ];
-    return corners.every(pt => isPointInMalaysia(pt));
+    ].every(pt => isPointInMalaysia(pt));
 }
 
-// ================= RUN BUTTON HELPERS =================
-function enableRunButton() {
-    const btn = document.getElementById("runBtn");
-    btn.disabled = false;
-    btn.classList.add("enabled");
+function daysBetween(d1, d2) {
+    return (d2 - d1) / (1000 * 60 * 60 * 24);
 }
 
-function disableRunButton() {
-    const btn = document.getElementById("runBtn");
-    btn.disabled = true;
-    btn.classList.remove("enabled");
-}
-disableRunButton();
+// ================= RUN BUTTON CONTROL =================
+const runBtn = document.getElementById("runBtn");
 
-// ================= LIVE AREA TOOLTIP =================
-let liveTooltip = null;
-let drawStartLatLng = null;
-
-function formatTooltip(areaKm2) {
-    if (areaKm2 > MAX_AREA_KM2) {
-        return `<span style="color:#ff4d4d;font-weight:600">
-            Area: ${areaKm2.toFixed(2)} km² (exceeds limit)
-        </span>`;
-    }
-    return `<span style="color:#2f7d32;font-weight:600">
-        Area: ${areaKm2.toFixed(2)} km²
-    </span>`;
+function updateRunButton() {
+    runBtn.disabled = !(isAOIValid && isDateValid);
+    runBtn.classList.toggle("enabled", isAOIValid && isDateValid);
 }
 
-// Start drawing
-map.on("draw:drawstart", e => {
-    if (e.layerType !== "rectangle") return;
+updateRunButton();
 
-    drawStartLatLng = null;
+// ================= DATE PICKER SETUP =================
+const startDateInput = document.getElementById("startDate");
+const endDateInput = document.getElementById("endDate");
 
-    map.once("mousedown", evt => {
-        drawStartLatLng = evt.latlng;
-    });
+// Last complete month (recommended)
+function getLastCompleteMonth() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 0);
+}
 
-    map.on("mousemove", evt => {
-        if (!drawStartLatLng) return;
+const maxDateStr = new Date().toISOString().split("T")[0];
 
-        const bounds = L.latLngBounds(drawStartLatLng, evt.latlng);
-        const areaKm2 = calculateAreaKm2(bounds);
-
-        if (!liveTooltip) {
-            liveTooltip = L.tooltip({
-                direction: "top",
-                permanent: false,
-                className: "aoi-tooltip"
-            }).addTo(map);
-        }
-
-        liveTooltip
-            .setLatLng(evt.latlng)
-            .setContent(formatTooltip(areaKm2));
-    });
+[startDateInput, endDateInput].forEach(input => {
+    if (!input) return;
+    input.min = "2017-01-01";
+    input.max = maxDateStr;
 });
 
-// Stop drawing
-map.on("draw:drawstop", () => {
-    map.off("mousemove");
-    drawStartLatLng = null;
-
-    if (liveTooltip) {
-        map.removeLayer(liveTooltip);
-        liveTooltip = null;
+// ================= DATE VALIDATION =================
+function validateDateRange(showAlert = false) {
+    if (!startDateInput.value || !endDateInput.value) {
+        isDateValid = false;
+        updateRunButton();
+        return;
     }
-});
+
+    const start = new Date(startDateInput.value);
+    const end = new Date(endDateInput.value);
+
+    if (start < MIN_START_DATE) {
+        if (showAlert) alert("Start date must be on or after 1 January 2017.");
+        isDateValid = false;
+        updateRunButton();
+        return;
+    }
+
+    if (end <= start) {
+        if (showAlert) alert("End date must be after the start date.");
+        isDateValid = false;
+        updateRunButton();
+        return;
+    }
+
+    const rangeDays = daysBetween(start, end);
+
+    if (rangeDays < MIN_RANGE_DAYS) {
+        if (showAlert) alert("Date range must be at least 30 days.");
+        isDateValid = false;
+        updateRunButton();
+        return;
+    }
+
+    if (rangeDays > MAX_RANGE_DAYS) {
+        if (showAlert) alert("Date range cannot exceed 12 months.");
+        isDateValid = false;
+        updateRunButton();
+        return;
+    }
+
+    isDateValid = true;
+    updateRunButton();
+}
+
+startDateInput?.addEventListener("change", () => validateDateRange(true));
+endDateInput?.addEventListener("change", () => validateDateRange(true));
 
 // ================= DRAW BUTTON =================
 document.getElementById("drawBoxBtn").addEventListener("click", () => {
@@ -150,10 +174,10 @@ document.getElementById("drawBoxBtn").addEventListener("click", () => {
 });
 
 // ================= AOI CREATED =================
-map.on(L.Draw.Event.CREATED, function (event) {
-    disableRunButton();
+map.on(L.Draw.Event.CREATED, event => {
     isAOIValid = false;
     selectedAOI = null;
+    updateRunButton();
 
     if (!malaysiaLoaded) {
         alert("Malaysia boundary still loading.");
@@ -163,20 +187,17 @@ map.on(L.Draw.Event.CREATED, function (event) {
     const layer = event.layer;
     const bounds = layer.getBounds();
 
-    // ---------- Malaysia check ----------
     if (!isAOIInsideMalaysia(bounds)) {
         alert("AOI must be fully within Malaysia.");
         return;
     }
 
-    // ---------- Area check ----------
     const areaKm2 = calculateAreaKm2(bounds);
     if (areaKm2 > MAX_AREA_KM2) {
-        alert(`AOI too large (${areaKm2.toFixed(2)} km²). Max is ${MAX_AREA_KM2} km².`);
+        alert(`AOI too large (${areaKm2.toFixed(2)} km²). Maximum is ${MAX_AREA_KM2} km².`);
         return;
     }
 
-    // ---------- Accept AOI ----------
     drawnItems.clearLayers();
     drawnItems.addLayer(layer);
 
@@ -189,7 +210,7 @@ map.on(L.Draw.Event.CREATED, function (event) {
     };
 
     isAOIValid = true;
-    enableRunButton();
+    updateRunButton();
 
     document.getElementById("aoiText").innerHTML = `
         <b>Area:</b> ${areaKm2.toFixed(2)} km²<br>
@@ -201,7 +222,7 @@ map.on(L.Draw.Event.CREATED, function (event) {
 });
 
 // ================= RUN ANALYSIS =================
-document.getElementById("runBtn").addEventListener("click", () => {
-    if (!isAOIValid) return;
+runBtn.addEventListener("click", () => {
+    if (!(isAOIValid && isDateValid)) return;
     window.location.href = "dashboard.html";
 });
