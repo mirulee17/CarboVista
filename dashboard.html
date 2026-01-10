@@ -23,14 +23,31 @@
     <h2>Biomass Analysis Dashboard</h2>
 </div>
 
-<div class="dashboard-container">
+    <div class="dashboard-header header-row">
 
-    <div class="dashboard-header">
-        <h3>Spatial Tree Carbon Prediction</h3>
-        <p>Pixel-wise estimation of above-ground carbon per tree (kg C)</p>
+        <div class="header-text">
+            <h3>Spatial Tree Carbon Prediction</h3>
+            <p id="headerMeta">
+            <span id="aoiAddress"></span> •
+            <strong><span id="aoiArea"></span> km²</strong> •
+            <span id="startDate"></span> → <span id="endDate"></span>
+            </p>
+        </div>
+
+        <button id="downloadCsv" class="btn-secondary">
+            ↓ Download CSV
+        </button>
+        <button id="downloadPdf" class="btn-secondary">
+            ↓ Download PDF Report
+        </button>
+
+
+        </div>
     </div>
 
-    <!-- KPI SUMMARY ROW -->
+
+
+    <!-- PRIMARY KPI ROW -->
     <div class="kpi-row">
 
         <div class="kpi-card">
@@ -52,13 +69,13 @@
         <div class="kpi-card">
             <div class="kpi-title">Analysed Pixels</div>
             <div class="kpi-value">
-                <span id="area">–</span>
+                <span id="count">–</span>
                 <span class="kpi-unit">pixels</span>
             </div>
         </div>
 
         <div class="kpi-card">
-            <div class="kpi-title">Range</div>
+            <div class="kpi-title">Carbon Range</div>
             <div class="kpi-value small">
                 <span id="min">–</span> – <span id="max">–</span>
                 <span class="kpi-unit">kg C</span>
@@ -67,26 +84,65 @@
 
     </div>
 
-    <!-- MAP -->
-    <div id="map" style="height: 520px; border-radius: 12px;"></div>
+    <!-- MAP + CHARTS -->
+    <div class="viz-row">
 
-    <!-- ANALYTICS ROW -->
-    <div class="analytics-row">
+        <div class="map-panel">
+            <div id="map"></div>
+        </div>
 
-        <!-- HISTOGRAM -->
-        <div class="panel">
-            <h4>Tree Carbon Distribution</h4>
-            <canvas id="acdHistogram"></canvas>
+        <div class="charts-column">
+            <div class="panel">
+                <h4>Tree Carbon Distribution</h4>
+                <canvas id="acdHistogram"></canvas>
+            </div>
+
+            <div class="panel">
+                <h4>Carbon Class Breakdown</h4>
+                <canvas id="acdPie"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECONDARY KPI ROW -->
+    <div class="kpi-row kpi-secondary">
+
+        <div class="kpi-card">
+            <div class="kpi-title">Vegetation Coverage</div>
+            <div class="kpi-value">
+                <span id="vegCoverage">–</span>
+                <span class="kpi-unit">%</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-title">Carbon Density</div>
+            <div class="kpi-value">
+                <span id="carbonDensity">–</span>
+                <span class="kpi-unit">kg C / m²</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-title">Prediction Confidence</div>
+            <div class="kpi-value">
+                <span id="confidenceScore">–</span>
+                <!-- <span class="kpi-unit">%</span> -->
+            </div>
         </div>
 
     </div>
 
 </div>
 
+
 <!-- JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/dashboard.js"></script>
+
 
 </body>
 </html>
