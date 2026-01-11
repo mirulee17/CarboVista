@@ -1,0 +1,295 @@
+/* ==================================================
+   ================== APP MODE ======================
+================================================== */
+
+body.app {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ================= TOP BAR ================= */
+
+.app .topbar {
+    height: 56px;
+    background: var(--bg-panel);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.app .topbar h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Back button */
+.app .back-btn {
+    background: none;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.app .back-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-main);
+}
+
+/* ================= LAYOUT ================= */
+
+.app .container {
+    display: flex;
+    height: calc(100vh - 56px);
+}
+
+/* ================= SIDEBAR ================= */
+
+.app .sidebar {
+    width: 300px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-soft);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.app .sidebar h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* ==================================================
+   🔥 ANALYSIS PANEL – STYLISH INPUT DESIGN
+================================================== */
+
+/* Location & Date Panels — GLASS CARD */
+.app .location-panel,
+.app .date-panel {
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.07),
+        rgba(255, 255, 255, 0.025)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    backdrop-filter: blur(6px);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.app .location-panel:hover,
+.app .date-panel:hover {
+    border-color: rgba(60, 191, 161, 0.45);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+}
+
+/* Section titles */
+.app .location-panel h4,
+.app .date-panel h4 {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* ================= INPUT FIELDS ================= */
+
+.app .location-panel input,
+.app .date-panel input {
+    background: linear-gradient(
+        180deg,
+        #ffffff,
+        #f3f7f6
+    );
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 13px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1c2b28;
+    outline: none;
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.1s ease;
+}
+
+/* Placeholder */
+.app .location-panel input::placeholder {
+    color: #8fa9a2;
+    font-weight: 400;
+}
+
+/* Focus — premium lift */
+.app .location-panel input:focus,
+.app .date-panel input:focus {
+    border-color: var(--accent);
+    box-shadow:
+        0 0 0 4px rgba(60, 191, 161, 0.35),
+        0 18px 36px rgba(0, 0, 0, 0.28);
+    transform: translateY(-1px);
+}
+
+/* ================= DATE LABELS ================= */
+
+.app .date-panel label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* Date picker icon */
+.app input[type="date"] {
+    position: relative;
+    width: 190px;
+    align-self: center;
+}
+
+.app input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.25);
+    opacity: 0.65;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.app input[type="date"]:hover::-webkit-calendar-picker-indicator {
+    opacity: 0.9;
+}
+
+/* ================= HINT TEXT ================= */
+
+.app .hint {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    opacity: 0.9;
+}
+
+/* ================= BUTTONS ================= */
+
+.app .btn {
+    width: 100%;
+    background: var(--accent-soft);
+    color: #ffffff;
+    border: none;
+    padding: 10px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.app .btn:hover {
+    background: var(--accent);
+}
+
+.app .btn:active {
+    transform: scale(0.98);
+}
+
+/* Disabled buttons */
+button:disabled,
+.btn:disabled {
+    background-color: #555;
+    color: #aaa;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* ================= AOI CARD ================= */
+
+.app .aoi-info {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ================= MAP ================= */
+
+.app #map {
+    flex: 1;
+    background: #0b1412;
+}
+
+/* ================= VIEW SWITCH ================= */
+
+.view-switch {
+    margin-left: auto;
+    background: linear-gradient(
+        135deg,
+        #1c2b28,
+        #8fa9a2
+    );
+    padding: 4px;
+    border-radius: 999px;
+    display: flex;
+    gap: 4px;
+}
+
+.switch-btn {
+    padding: 8px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.switch-btn.active {
+    background: #ffffff;
+    color: #1c2b28;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.switch-btn:not(.active):hover {
+    opacity: 0.85;
+}
+
+/* ================= AOI COMPARISON ================= */
+
+.compare-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: calc(100vh - 56px);
+}
+
+.compare-panel {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    border-right: 1px solid var(--border-soft);
+}
+
+.compare-panel:last-child {
+    border-right: none;
+}
+
+.compare-panel .map {
+    background: #0b1412;
+}

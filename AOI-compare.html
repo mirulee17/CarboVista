@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Biomass Analysis</title>
+    <title>Biomass Analysis – AOI Comparison</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Leaflet CSS -->
@@ -17,11 +17,14 @@
         href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"
     />
 
-    <!-- Main CSS (GLOBAL) -->
+    <!-- Global Styles -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- AOI PAGE CSS (YOU WERE MISSING THIS) -->
+    <!-- Base AOI Styles -->
     <link rel="stylesheet" href="css/aoi.css">
+
+    <!-- AOI Compare Styles -->
+    <link rel="stylesheet" href="css/aoi-compare.css">
 
     <!-- Fonts -->
     <link
@@ -30,34 +33,33 @@
     />
 </head>
 
-<body class="app aoi-page">
+<body class="app compare">
 
-    <!-- Top Bar -->
+    <!-- ================= TOP BAR ================= -->
     <div class="topbar">
         <a href="index.html" class="back-btn">← Back</a>
         <h2>Biomass Analysis Dashboard</h2>
 
         <div class="view-switch">
-    <a href="aoi.html" class="switch-btn active">
-        Single AOI
-    </a>
-    <a href="aoi-compare.html" class="switch-btn">
-        Compare AOI
-    </a>
-</div>
-
+            <a href="aoi.html" class="switch-btn">
+                Single AOI
+            </a>
+            <a href="aoi-compare.html" class="switch-btn active">
+                Compare AOI
+            </a>
+        </div>
     </div>
 
-    <!-- Main Layout -->
+    <!-- ================= MAIN LAYOUT ================= -->
     <div class="container">
 
-        <!-- Sidebar -->
+        <!-- ============ SIDEBAR ============ -->
         <aside class="sidebar">
             <h3>Analysis Panel</h3>
 
             <!-- LOCATION SEARCH -->
             <div class="location-panel">
-                <h4>📍Find Location</h4>
+                <h4>📍 Find Location</h4>
 
                 <input
                     type="text"
@@ -68,57 +70,69 @@
 
                 <p class="hint">
                     Used to navigate the map only.<br>
-                    You must still draw a bounding box.
+                    Same AOI is applied to both time ranges.
                 </p>
             </div>
 
-            <!-- DATE SELECTION -->
-            <div class="date-panel">
-                <h4>🗓️ Time Period</h4>
+            <!-- TIME COMPARISON -->
+            <div class="time-compare">
 
-                <label for="startDate">Start date</label>
-                <input
-                    type="date"
-                    id="startDate"
-                    min="2017-01-01"
-                />
+                <!-- TIME A -->
+                <div class="date-panel">
+                    <div class="time-label">🗓️ TIME PERIOD A</div>
 
-                <label for="endDate">End date</label>
-                <input
-                    type="date"
-                    id="endDate"
-                />
+                    <label for="startDateA">Start date</label>
+                    <input type="date" id="startDateA" min="2017-01-01" />
 
-                <p class="hint">
-                    Range: 30 days – 12 months<br>
-                    Sentinel-2 available from 2017 onward
-                </p>
+                    <label for="endDateA">End date</label>
+                    <input type="date" id="endDateA" />
+                </div>
+
+                <!-- TIME B -->
+                <div class="date-panel">
+                    <div class="time-label">🗓️ TIME PERIOD B</div>
+
+                    <label for="startDateB">Start date</label>
+                    <input type="date" id="startDateB" min="2017-01-01" />
+
+                    <label for="endDateB">End date</label>
+                    <input type="date" id="endDateB" />
+                </div>
+
             </div>
+
+            <p class="hint">
+                Each range: 30 days – 12 months<br>
+                Sentinel-2 available from 2017 onward
+            </p>
 
             <!-- AOI ACTIONS -->
             <button id="drawBoxBtn" class="btn">
                 Draw Bounding Box
             </button>
 
-            <button id="runBtn" class="btn" disabled>
-                Run Analysis
+            <button id="runCompareBtn" class="btn run-compare" disabled>
+                Run Comparison
             </button>
 
-            <!-- AOI Info -->
+            <!-- AOI INFO -->
             <div class="aoi-info">
                 <h4>Selected AOI</h4>
                 <p id="aoiText">No area selected</p>
             </div>
         </aside>
 
-        <!-- Map -->
+        <!-- ============ MAP (SINGLE) ============ -->
         <div id="map"></div>
+
     </div>
+
+    <!-- ================= SCRIPTS ================= -->
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Leaflet Draw JS -->
+    <!-- Leaflet Draw -->
     <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
     <!-- Leaflet Point-in-Polygon -->
@@ -127,15 +141,15 @@
     <!-- Leaflet Geocoder -->
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-    <!-- AOI + Date + Location Logic -->
-    <script src="js/AOI.js"></script>
+    <!-- AOI Compare Logic -->
+    <script src="js/AOI-compare.js"></script>
 
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay hidden">
         <div class="loading-box">
             <div class="spinner"></div>
             <div id="loadingText" class="loading-text">
-                Initialising analysis…
+                Initialising comparison…
             </div>
         </div>
     </div>
