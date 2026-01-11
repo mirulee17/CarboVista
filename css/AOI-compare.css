@@ -1,0 +1,173 @@
+/* ==================================================
+   AOI COMPARISON MODE (EXTENDS AOI.css)
+   Same design language – dual time comparison
+================================================== */
+
+body.app.compare {
+    overflow: hidden;
+}
+
+/* ==================================================
+   LAYOUT OVERRIDE
+================================================== */
+
+.app.compare .container {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    height: calc(100vh - 56px);
+}
+
+/* ==================================================
+   SIDEBAR (WIDER FOR 2 TIME RANGES)
+================================================== */
+
+.app.compare .sidebar {
+    width: 420px;
+    padding: 18px;
+    gap: 20px;
+}
+
+/* ==================================================
+   SHARED LOCATION PANEL
+================================================== */
+
+.app.compare .location-panel {
+    margin-bottom: 4px;
+}
+
+/* ==================================================
+   COMPACT TIME RANGE PANELS (COMPARE MODE)
+================================================== */
+
+/* Grid container */
+.app.compare .time-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Compact date cards */
+.app.compare .time-compare .date-panel {
+    padding: 12px;
+    border-radius: 14px;
+    gap: 8px;
+}
+
+/* Time label (TIME A / TIME B) */
+.app.compare .time-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+
+/* Labels */
+.app.compare .date-panel label {
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+/* Inputs */
+.app.compare .date-panel input[type="date"] {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 10px;
+}
+
+/* Remove lift effect (optional, cleaner in dense UI) */
+.app.compare .date-panel input:focus {
+    transform: none;
+}
+
+
+/* ==================================================
+   AOI INFO (SHARED)
+================================================== */
+
+.app.compare .aoi-info {
+    margin-top: 6px;
+}
+
+/* ==================================================
+   RUN BUTTON
+================================================== */
+
+.app.compare .btn.run-compare {
+    margin-top: auto;
+}
+
+/* ==================================================
+   MAP COMPARISON VIEW
+================================================== */
+
+.app.compare .map-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-left: 1px solid var(--border-soft);
+}
+
+/* Individual map panels */
+.app.compare .map-panel {
+    position: relative;
+    background: #0b1412;
+}
+
+/* Divider line between maps */
+.app.compare .map-panel:first-child {
+    border-right: 1px solid var(--border-soft);
+}
+
+/* ==================================================
+   MAP TITLE OVERLAY
+================================================== */
+
+.app.compare .map-title {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 600;
+    background: rgba(15, 31, 28, 0.85);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: var(--text-main);
+}
+
+/* Accent for left vs right */
+.app.compare .map-title.time-a {
+    border-color: rgba(60, 191, 161, 0.45);
+}
+
+.app.compare .map-title.time-b {
+    border-color: rgba(147, 51, 234, 0.45);
+}
+
+
+/* ==================================================
+   VIEW SWITCH (TOP BAR – NO CHANGE, JUST CONTEXT)
+================================================== */
+
+.app.compare .switch-btn.active {
+    background: #ffffff;
+    color: #1c2b28;
+}
+
+.app.compare .topbar {
+    height: 56px;
+    min-height: 56px;
+    flex-shrink: 0;
+}
+
+/* ==================================================
+   ✅ REQUIRED FIX: MAP HEIGHT (GRID CONTEXT)
+================================================== */
+
+.app.compare #map {
+    height: calc(100vh - 56px);
+    width: 100%;
+}
