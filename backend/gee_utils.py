@@ -67,6 +67,17 @@ def add_spectral_indices(img):
 def mask_non_vegetation(img, ndvi_threshold=0.25):
     return img.updateMask(img.select("NDVI").gte(ndvi_threshold))
 
+# =========================================================
+# 4.5 AOI PIXEL DENSITY ESTIMATION (STABILITY GUARD)
+# =========================================================
+def estimate_pixel_count(aoi, scale=10):
+    """
+    Estimates how many pixels will be processed for the AOI.
+    Prevents Earth Engine overload for large or dense areas.
+    """
+    area_m2 = aoi.area()              # AOI area in m²
+    pixel_area = scale * scale        # e.g. 10m × 10m
+    return area_m2.divide(pixel_area)
 
 # =========================================================
 # 5. PIXEL-WISE EXTRACTION (SPATIAL DSS)
@@ -84,6 +95,24 @@ def extract_s2_pixels(
     """
 
     aoi = ee.Geometry.Polygon(aoi_coords)
+
+
+    # ---------------------------------------------------------
+    # 🔒 PRE-FLIGHT AOI DENSITY CHECK
+    # Prevents server crash for large / dense AOIs
+    # ---------------------------------------------------------
+    estimated_pixels = estimate_pixel_count(aoi, scale)
+
+    # ⚠️ Convert to client-side number ONCE (safe & fast)
+    estimated_pixels = estimated_pixels.getInfo()
+
+    # 8000 pixels ≈ upper safe bound for synchronous EE .getInfo()
+    # at 10 m resolution in urban environments
+    if estimated_pixels > 8000:
+        raise ValueError(
+            f"AOI too dense (~{int(estimated_pixels)} pixels). "
+            "Please reduce AOI size or shorten the date range."
+        )
 
     s2 = (
         ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
@@ -103,12 +132,18 @@ def extract_s2_pixels(
         .reproject(crs="EPSG:4326", scale=scale)
     )
 
+    # ---------------------------------------------------------
+    # HARD-CAPPED pixel sampling for stability
+    # ---------------------------------------------------------
     samples = composite.sample(
         region=aoi,
         scale=scale,
         geometries=True,
-        numPixels=20000
+        numPixels=5000,   # 🔒 Absolute maximum pixels returned
+        tileScale=4       # 🔧 Prevents EE memory overflow
     )
+
+
 
     return samples
 

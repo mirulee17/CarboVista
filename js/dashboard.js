@@ -28,15 +28,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // Medium      → Green
 // High carbon → Red
 function getColor(carbonKg) {
-    return carbonKg > 120 ? "#7f0000" :  // dark red
+    return carbonKg > 120 ? "#7f0000" :  // very high (dark red)
            carbonKg > 100 ? "#b30000" :
            carbonKg > 80  ? "#d73027" :
            carbonKg > 60  ? "#fc8d59" :
-           carbonKg > 40  ? "#91cf60" :  // green
-           carbonKg > 25  ? "#d9ef8b" :
-           carbonKg > 10  ? "#fee08b" :
-                            "#ffffcc"; // pale yellow
+           carbonKg > 40  ? "#1a9850" :  // solid green (medium biomass)
+           carbonKg > 20  ? "#91cf60" :  // light green (low–medium)
+           carbonKg > 10  ? "#fee08b" :  // light yellow
+                            "#ffffcc"; // very low biomass
 }
+
 
 
 
@@ -53,13 +54,13 @@ document.getElementById("max").textContent =
     stats.max_acd.toFixed(2);
 
 document.getElementById("total").textContent =
-    stats.total_carbon.toFixed(2);
+    stats.total_carbon_tonnes.toFixed(2);
 
 document.getElementById("count").textContent =
     stats.n_pixels;
 
-document.getElementById("vegCoverage").textContent =
-    stats.vegetation_coverage.toFixed(1);
+document.getElementById("vegetatedArea").textContent =
+    stats.vegetated_area_ha.toFixed(1);
 
 document.getElementById("confidenceScore").textContent =
     stats.confidence_score.toFixed(2);
@@ -78,6 +79,9 @@ document.getElementById("startDate").textContent =
 
 document.getElementById("endDate").textContent =
     stats.end_date;
+
+document.getElementById("carbonValue").textContent =
+    stats.carbon_value_rm.toLocaleString("en-MY");
 
 // =====================================================
 // GEOJSON LAYER
@@ -102,7 +106,7 @@ const legend = L.control({ position: "bottomright" });
 
 legend.onAdd = function () {
     const div = L.DomUtil.create("div", "legend");
-    const grades = [0, 10, 25, 40, 60, 80, 100, 120];
+    const grades = [0, 10, 20, 40, 60, 80, 100, 120];
 
     div.innerHTML = "<b>Tree Carbon (kg C)</b><br>";
 
