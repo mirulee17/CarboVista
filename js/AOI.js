@@ -7,6 +7,37 @@ L.GeometryUtil.readableArea = function (area) {
     </span>`;
 };
 
+// ================= LOADING BUFFER =================
+const loadingOverlay = document.getElementById("loadingOverlay");
+const loadingText = document.getElementById("loadingText");
+
+function showLoading() {
+    loadingOverlay.classList.remove("hidden");
+
+    const steps = [
+        "Loading Sentinel-2 imagery…",
+        "Applying cloud masking & compositing…",
+        "Estimating tree carbon density…",
+        "Generating spatial dashboard…"
+    ];
+
+    let i = 0;
+    loadingText.textContent = steps[i];
+
+    return setInterval(() => {
+        if (i < steps.length - 1) {
+            i++;
+            loadingText.textContent = steps[i];
+        }
+    }, 1200);
+}
+
+function hideLoading(intervalId) {
+    clearInterval(intervalId);
+    loadingOverlay.classList.add("hidden");
+}
+
+
 // ================= GLOBAL STATE =================
 let selectedAOI = null;
 let isAOIValid = false;
@@ -288,6 +319,28 @@ runBtn.addEventListener("click", async () => {
     runBtn.disabled = true;
     runBtn.textContent = "Running analysis...";
 
+    // 🔹 SHOW LOADING OVERLAY
+    const loadingSteps = [
+        "Loading Sentinel-2 imagery…",
+        "Applying cloud masking & compositing…",
+        "Estimating tree carbon density…",
+        "Generating spatial dashboard…"
+    ];
+
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
+
+    loadingOverlay.classList.remove("hidden");
+    loadingText.textContent = loadingSteps[0];
+
+    let stepIndex = 0;
+    const loadingInterval = setInterval(() => {
+        if (stepIndex < loadingSteps.length - 1) {
+            stepIndex++;
+            loadingText.textContent = loadingSteps[stepIndex];
+        }
+    }, 1200);
+
     try {
         const response = await fetch("http://127.0.0.1:5000/run-analysis", {
             method: "POST",
@@ -310,7 +363,7 @@ runBtn.addEventListener("click", async () => {
         // ✅ STORE RESULTS
         localStorage.setItem("analysisResult", JSON.stringify(data));
 
-        // Optional: store AOI bounds for dashboard
+        // ✅ STORE AOI BOUNDS FOR DASHBOARD
         localStorage.setItem(
             "aoiBounds",
             JSON.stringify([
@@ -319,13 +372,23 @@ runBtn.addEventListener("click", async () => {
             ])
         );
 
+        // 🔹 CLEAN UP LOADING UI
+        clearInterval(loadingInterval);
+        loadingOverlay.classList.add("hidden");
+
         // ✅ REDIRECT ONLY AFTER DATA EXISTS
         window.location.href = "dashboard.html";
 
     } catch (err) {
         console.error(err);
+
+        // 🔹 CLEAN UP LOADING UI ON ERROR
+        clearInterval(loadingInterval);
+        loadingOverlay.classList.add("hidden");
+
         alert("Failed to run analysis. Please try again.");
         runBtn.disabled = false;
         runBtn.textContent = "Run Analysis";
     }
 });
+

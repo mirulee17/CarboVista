@@ -27,7 +27,7 @@
     />
 </head>
 
-<body class="app">
+<body class="app aoi-page">
 
     <!-- Top Bar -->
     <div class="topbar">
@@ -96,13 +96,6 @@
                 <h4>Selected AOI</h4>
                 <p id="aoiText">No area selected</p>
             </div>
-
-            <!-- Navigation -->
-            <div class="analysis-actions">
-                <a href="dashboard.html" class="btn secondary">
-                    View Analysis Dashboard
-                </a>
-            </div>
         </aside>
 
         <!-- Map -->
@@ -123,6 +116,16 @@
 
     <!-- AOI + Date + Location Logic -->
     <script src="js/AOI.js"></script>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-box">
+            <div class="spinner"></div>
+            <div id="loadingText" class="loading-text">
+                Initialising analysis…
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

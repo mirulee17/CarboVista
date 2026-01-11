@@ -19,9 +19,45 @@ const features = analysis.geojson.features;
 const map = L.map("map");
 const canvasRenderer = L.canvas({ padding: 0.5 });
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
+// =====================================================
+// BASE MAP LAYERS
+// =====================================================
+
+// Street map (default)
+const streetMap = L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution: "&copy; OpenStreetMap contributors"
+    }
+);
+
+// Satellite imagery (Google-like)
+const satelliteMap = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+    "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+        attribution:
+            "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics"
+    }
+);
+
+// Add default base layer
+streetMap.addTo(map);
+
+
+// =====================================================
+// LAYER CONTROL (Map Switcher)
+// =====================================================
+L.control.layers(
+    {
+        "Street Map": streetMap,
+        "Satellite Map": satelliteMap
+    },
+    null,
+    { position: "topright", collapsed: false }
+).addTo(map);
+
+
 
 // ================= GIS COLOR SCALE (Yellow → Green → Red) =================
 // Low carbon  → Yellow
@@ -33,12 +69,57 @@ function getColor(carbonKg) {
            carbonKg > 80  ? "#d73027" :
            carbonKg > 60  ? "#fc8d59" :
            carbonKg > 40  ? "#1a9850" :  // solid green (medium biomass)
-           carbonKg > 20  ? "#91cf60" :  // light green (low–medium)
-           carbonKg > 10  ? "#fee08b" :  // light yellow
-                            "#ffffcc"; // very low biomass
+           carbonKg > 20  ? "#a6d96a" :  // light green (low–medium)
+           carbonKg > 10  ? "#f6e8a7" :  // light yellow
+                            "#fdf5c9"; // very low biomass
 }
 
+function getMarkerStyle(carbonKg, zoom) {
+    return {
+        radius:
+            zoom >= 15 ? 4 :
+            zoom >= 14 ? 3 :
+            zoom >= 13 ? 2 :
+                         1.2,
 
+        fillColor: getColor(carbonKg),
+
+        fillOpacity:
+            zoom >= 15 ? 0.9 :
+            zoom >= 14 ? 0.75 :
+            zoom >= 13 ? 0.55 :
+                         0.35,
+
+        stroke: false
+    };
+}
+
+function addAOIMask(bounds) {
+    const outerBounds = [
+        [-90, -180],
+        [-90, 180],
+        [90, 180],
+        [90, -180]
+    ];
+
+    const hole = [
+        [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
+        [bounds.getSouthWest().lat, bounds.getNorthEast().lng],
+        [bounds.getNorthEast().lat, bounds.getNorthEast().lng],
+        [bounds.getNorthEast().lat, bounds.getSouthWest().lng]
+    ];
+
+    L.polygon(
+        [outerBounds, hole],
+        {
+            color: "#000",
+            fillColor: "#000",
+            fillOpacity: 0.18,
+            stroke: false,
+            interactive: false
+        }
+    ).addTo(map);
+}
 
 
 // =====================================================
@@ -88,17 +169,27 @@ document.getElementById("carbonValue").textContent =
 // =====================================================
 const geoLayer = L.geoJSON(analysis.geojson, {
     pointToLayer: (feature, latlng) => {
-        const carbonKg = feature.properties.carbon_kg;
-
-        return L.circleMarker(latlng, {
-            radius: 4,
-            fillColor: getColor(carbonKg),
-            color: "rgba(0,0,0,0.15)",
-            weight: 0.5,
-            fillOpacity: 0.9
-        });
+        return L.circleMarker(
+            latlng,
+            getMarkerStyle(
+                feature.properties.carbon_kg,
+                map.getZoom()
+            )
+        );
     }
 }).addTo(map);
+
+map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    geoLayer.eachLayer(layer => {
+        layer.setStyle(
+            getMarkerStyle(
+                layer.feature.properties.carbon_kg,
+                zoom
+            )
+        );
+    });
+});
 
 
 // ================= GIS LEGEND =================
@@ -122,11 +213,23 @@ legend.onAdd = function () {
 legend.addTo(map);
 
 // Fit map to AOI
-if (aoiBounds) {
-    map.fitBounds(aoiBounds);
-} else {
-    map.fitBounds(geoLayer.getBounds());
-}
+// Force correct sizing AFTER layout settles
+setTimeout(() => {
+    map.invalidateSize();
+
+    const bounds = geoLayer.getBounds();
+
+    if (bounds.isValid()) {
+        map.fitBounds(bounds, {
+            padding: [10, 10],
+            maxZoom: 16,
+            animate: false,
+        });
+        addAOIMask(bounds);
+    }
+}, 300);
+
+
 
 // Scale bar (metric – Malaysia)
 L.control.scale({
