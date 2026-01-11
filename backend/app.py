@@ -133,6 +133,17 @@ def run_analysis():
             return jsonify({"error": "Missing AOI or date range"}), 400
 
         # --------------------------------------------------
+        # AOI area enforcement (backend authority)
+        # --------------------------------------------------
+        area_km2 = compute_aoi_area_km2(aoi_coords)
+
+        if area_km2 > 2.0:
+            return jsonify({
+                "error": f"AOI too large ({area_km2:.2f} km²). "
+                        "Maximum supported area is 2.0 km²."
+            }), 400
+
+        # --------------------------------------------------
         # 1️⃣ Extract pixel-wise Sentinel-2 features (GEE)
         # --------------------------------------------------
         fc = extract_s2_pixels(
@@ -192,32 +203,63 @@ def run_analysis():
         }
 
         # --------------------------------------------------
-        # 5️⃣ Additional KPIs
+        # 5️⃣ Additional KPIs (FINAL & MEANINGFUL)
         # --------------------------------------------------
+
+        # Pixel counts (for diagnostics / charts)
         n_total_pixels = len(features)
         n_valid_pixels = len(df)
 
-        vegetation_coverage = (
-            (n_valid_pixels / n_total_pixels) * 100
-            if n_total_pixels > 0 else 0.0
-        )
+        # --------------------------------------------------
+        # Basic statistics (per-pixel)
+        # --------------------------------------------------
+        mean_carbon = df["carbon_kg"].mean()
+        std_carbon = df["carbon_kg"].std()
 
-        total_carbon = float(df["carbon_kg"].sum())
-
-        confidence_score = (
-            float(np.exp(-df["carbon_kg"].std() / df["carbon_kg"].mean()))
-            if df["carbon_kg"].mean() > 0 else 0.0
-        )
+        # Prediction confidence (relative consistency)
+        if mean_carbon > 0:
+            confidence_score = float(np.exp(-std_carbon / mean_carbon))
+        else:
+            confidence_score = 0.0
         confidence_score = max(0.0, min(confidence_score, 1.0))
 
-        pixel_area_m2 = 100  # 10m x 10m
-        carbon_density = (
-            total_carbon / (n_valid_pixels * pixel_area_m2)
-            if n_valid_pixels > 0 else 0.0
-        )
+        # --------------------------------------------------
+        # AREA-SCALED CARBON ESTIMATION
+        # --------------------------------------------------
 
         # AOI area
-        area_km2 = compute_aoi_area_km2(aoi_coords)
+        area_ha = area_km2 * 100  # 1 km² = 100 ha
+
+        # Vegetated area (ha)
+        # NOTE: Vegetation masking is applied upstream, so analysed area ≈ vegetated area
+        vegetated_area_ha = area_ha
+
+        # Estimated number of vegetation pixels (10 m × 10 m)
+        estimated_veg_pixels = (vegetated_area_ha * 10_000) / 100
+
+        # Estimated total carbon for full AOI (kg C)
+        total_carbon_kg = mean_carbon * estimated_veg_pixels
+
+        # Total carbon in tonnes (dashboard-friendly)
+        total_carbon_t = total_carbon_kg / 1000
+
+        # Carbon density (kg C / ha)
+        carbon_density = (
+            total_carbon_kg / vegetated_area_ha
+            if vegetated_area_ha > 0 else 0.0
+        )
+
+        # --------------------------------------------------
+        # CARBON VALUE (REFERENCE ONLY)
+        # --------------------------------------------------
+
+        # Convert to CO₂ equivalent (tonnes)
+        co2e_tonnes = total_carbon_kg * 3.67 / 1000
+
+        # Reference valuation (RM 50 / tCO₂e)
+        carbon_value_rm = co2e_tonnes * 50
+
+
 
         # AOI address (repeat logic safely)
         aoi_address = "Unknown location"
@@ -246,27 +288,28 @@ def run_analysis():
         stats = {
             "n_pixels": int(n_valid_pixels),
 
-            # 🔁 LEGACY KEYS (keep frontend alive)
-            "mean_acd": float(df["carbon_kg"].mean()),
+            # Per-pixel statistics
+            "mean_acd": float(mean_carbon),
             "min_acd": float(df["carbon_kg"].min()),
             "max_acd": float(df["carbon_kg"].max()),
-            "std_acd": float(df["carbon_kg"].std()),
+            "std_acd": float(std_carbon),
 
-            # Totals
-            "total_carbon": float(df["carbon_kg"].sum()),
+            # AREA-SCALED totals
+            "total_carbon_tonnes": round(total_carbon_t, 2),
+            "carbon_value_rm": round(carbon_value_rm, 2),
 
-            # NEW KPIs
-            "vegetation_coverage": round(vegetation_coverage, 1),
+            # Derived KPIs
+            "vegetated_area_ha": round(vegetated_area_ha, 2),
             "confidence_score": round(confidence_score, 2),
-            "carbon_density": round(carbon_density, 3),
-            
-            #AOI metadata
+            "carbon_density": round(carbon_density, 2),
+
+            # AOI metadata
             "aoi_area_km2": round(area_km2, 3),
             "aoi_address": aoi_address,
             "start_date": start_date,
             "end_date": end_date
-
         }
+
 
         return jsonify({
             "stats": stats,
@@ -363,7 +406,7 @@ def download_csv():
         writer.writerow([])
         writer.writerow([f"# Analysed Pixels,{n_valid_pixels}"])
         writer.writerow([f"# Mean Tree Carbon (kg C),{df['carbon_kg'].mean():.2f}"])
-        writer.writerow([f"# Total Carbon (kg C),{df['carbon_kg'].sum():.2f}"])
+        writer.writerow([f"# Sampled Carbon (kg C),{df['carbon_kg'].sum():.2f}"])
         writer.writerow([f"# Vegetation Coverage (%),{vegetation_coverage:.1f}"])
         writer.writerow([f"# Prediction Confidence,{confidence:.2f}"])
         writer.writerow([])

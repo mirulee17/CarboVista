@@ -1,7 +1,7 @@
 // ================= LEAFLET AREA FORMATTER =================
 L.GeometryUtil.readableArea = function (area) {
     const km2 = area / 1e6;
-    const color = km2 > 2 ? "#ff4d4d" : "#2f7d32";
+    const color = km2 > 0.7 ? "#ff4d4d" : "#2f7d32";
     return `<span style="color:${color};font-weight:600">
         Area: ${km2.toFixed(2)} km²
     </span>`;
@@ -13,7 +13,7 @@ let isAOIValid = false;
 let isDateValid = false;
 let malaysiaLoaded = false;
 
-const MAX_AREA_KM2 = 2;
+const MAX_AREA_KM2 = 0.7;
 const MIN_RANGE_DAYS = 30;
 const MAX_RANGE_DAYS = 365;
 const MIN_START_DATE = new Date("2017-01-01");
@@ -232,9 +232,14 @@ map.on(L.Draw.Event.CREATED, e => {
 
     const area = calculateAreaKm2(bounds);
     if (area > MAX_AREA_KM2) {
-        alert(`AOI too large (${area.toFixed(2)} km²). Max is 2 km².`);
+        alert(
+            `AOI too large (${area.toFixed(2)} km²).\n\n` +
+            `Maximum supported area is 0.7 km².\n` +
+            `This ensures stable carbon estimation.`
+        );
         return;
     }
+
 
     drawnItems.clearLayers();
     drawnItems.addLayer(layer);
