@@ -1,0 +1,570 @@
+/* ==================================================
+   KEPLER-STYLE DARK GREEN THEME (REFINED)
+================================================== */
+
+:root {
+    --bg-main: #0f1f1c;
+    --bg-panel: #162926;
+    --bg-panel-2: #1d3531;
+    --bg-hover: #23433d;
+
+    --accent: #3cbfa1;
+    --accent-soft: #2a8f79;
+
+    --text-main: #e6f4ef;
+    --text-muted: #9fbeb6;
+
+    --border-soft: rgba(255, 255, 255, 0.08);
+}
+
+/* ==================================================
+   GLOBAL
+================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+/* ==================================================
+   ================== APP MODE ======================
+================================================== */
+
+body.app {
+    background: var(--bg-main);
+    color: var(--text-main);
+    overflow: hidden;
+    font-size: 13px;
+}
+
+/* ================= TOP BAR ================= */
+
+.app .topbar {
+    height: 56px;
+    background: var(--bg-panel);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.app .topbar h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Back button */
+.app .back-btn {
+    background: none;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.app .back-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-main);
+}
+
+/* ================= LAYOUT ================= */
+
+.app .container {
+    display: flex;
+    height: calc(100vh - 56px);
+}
+
+/* ================= SIDEBAR ================= */
+
+.app .sidebar {
+    width: 260px;
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border-soft);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.app .sidebar h3 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+/* ================= BUTTONS ================= */
+
+.app .btn {
+    width: 100%;
+    background: var(--accent-soft);
+    color: #fff;
+    border: none;
+    padding: 10px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.app .btn:hover {
+    background: var(--accent);
+}
+
+/* ================= AOI CARD ================= */
+
+.app .aoi-info {
+    background: var(--bg-panel-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ================= MAP ================= */
+
+.app #map {
+    flex: 1;
+    background: #0b1412;
+}
+
+/* ================= DASHBOARD ================= */
+
+.app .dashboard-container {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.app .dashboard-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+/* ==================================================
+   ================= LANDING MODE ===================
+================================================== */
+
+body.landing {
+    background: radial-gradient(circle at top, #2f6f5f, #0f1f1c 70%);
+    color: var(--text-main);
+}
+
+/* ================= NAVBAR ================= */
+
+.landing .navbar {
+    padding: 24px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* System title – POPPINS */
+.landing .navbar h1 {
+    font-family: "Poppins", system-ui, sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* ================= HERO ================= */
+
+.landing .landing-hero {
+    height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 120px;
+    padding: 0 80px;
+}
+
+.landing .hero-text {
+    max-width: 520px;
+}
+
+/* Headline – TIEMPOS STYLE (Playfair Display) */
+.landing .hero-text h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+}
+
+.landing .hero-text p {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+/* ================= TREE ILLUSTRATION ================= */
+
+.landing .tree-svg {
+    width: 420px;
+    animation: floatTree 6s ease-in-out infinite;
+    filter: drop-shadow(0 40px 80px rgba(0,0,0,0.35));
+}
+
+/* ================= PROJECT OVERVIEW ================= */
+
+.landing .info {
+    max-width: 760px;
+    margin: 80px auto 120px auto;
+    text-align: center;
+}
+
+.landing .info h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.landing .info p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+}
+
+/* ================= FLOATING LAUNCH BUTTON ================= */
+
+.landing .fab-launch {
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
+    z-index: 1000;
+
+    background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+    color: #ffffff;
+    padding: 16px 28px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing .fab-launch:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.45);
+}
+
+/* ================= FOOTER ================= */
+
+.landing .footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--text-muted);
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes floatTree {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+    100% { transform: translateY(0); }
+}
+/* ================= DISABLED BUTTON STATE ================= */
+button:disabled,
+.btn:disabled {
+    background-color: #555;          /* muted */
+    color: #aaa;                     /* grey text */
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* Optional: hover should NOT change disabled button */
+button:disabled:hover,
+.btn:disabled:hover {
+    background-color: #555;
+}
+/* ================= ENABLED RUN BUTTON ================= */
+.btn.enabled {
+    background-color: #2f7d32;   /* same green */
+    color: #fff;
+    cursor: pointer;
+    opacity: 1;
+}
+/* ================= LEAFLET DRAW TOOLTIP VISIBILITY FIX ================= */
+
+/* Main tooltip container */
+.leaflet-draw-tooltip {
+    background: rgba(0, 0, 0, 0.85) !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    border: none;
+}
+
+/* Tooltip arrow */
+.leaflet-draw-tooltip:before {
+    border-top-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Our km² area text (from JS formatter) */
+.leaflet-draw-tooltip span {
+    color: inherit;
+}
+/* ================= KPI ROW ================= */
+
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin: 20px 0 28px;
+}
+
+.kpi-card {
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.02)
+    );
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.kpi-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #b9c3cc;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.kpi-value {
+    font-size: 30px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.kpi-value.small {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.kpi-unit {
+    font-size: 13px;
+    font-weight: 500;
+    color: #9fb0bd;
+}
+/* ================= DASHBOARD LAYOUT ================= */
+
+.dashboard-container {
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: 20px;
+    padding: 20px;
+    flex-direction: column;
+}
+
+/* ================= VISUALISATION ROW ================= */
+
+.viz-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr; /* map : charts */
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* ================= MAP ================= */
+
+.map-panel {
+    display: flex;
+    flex-direction: column;
+    background: #0f1f1c;
+    border-radius: 14px;
+    padding: 8px;
+}
+
+#map {
+    flex: 1;
+    min-height: 320px;
+    height: 420px;
+    width: 100%;
+    border-radius: 12px;
+}
+
+/* ================= CHARTS ================= */
+
+.charts-column {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+}
+
+/* ================= PANELS ================= */
+
+.panel {
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.02)
+    );
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e6eef5;
+    letter-spacing: 0.03em;
+}
+
+/* ================= CHART SIZE CONTROL ================= */
+
+.panel canvas {
+    min-height: 180px;
+    height: 220px !important;
+}
+canvas {
+    width: 100% !important;
+    height: 220px !important;
+}
+
+/* ================= MAP LEGEND ================= */
+.legend {
+    background: rgba(15, 30, 28, 0.92);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #e6eef5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.legend i {
+    width: 14px;
+    height: 14px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.95;
+    border-radius: 3px;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+@media (max-width: 1200px) {
+    .viz-row {
+        grid-template-columns: 1fr;
+    }
+
+    #map {
+        height: 360px;
+    }
+}
+
+@media (max-height: 800px) {
+    .kpi-secondary {
+        grid-template-columns: repeat(3, 1fr);
+        margin-bottom: 16px;
+    }
+
+    .kpi-value {
+        font-size: 22px;
+    }
+}
+
+/* ================= DASHBOARD HEADER ================= */
+
+.dashboard-header.header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 6px;
+}
+
+.dashboard-header .header-text {
+    max-width: 70%;
+}
+
+.dashboard-header .header-text h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+
+}
+
+.dashboard-header .header-text p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+#headerMeta {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ================= HEADER DOWNLOAD BUTTON ================= */
+
+.dashboard-header .btn-secondary {
+    width: auto;               /* ❗ stop full-width */
+    padding: 8px 14px;
+    font-size: 12px;
+    height: fit-content;
+    align-self: flex-start;    /* aligns with title */
+}
+
+/* Download button style */
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--accent-soft);
+    color: var(--accent);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+    opacity: 0.9;
+    background: rgba(60, 191, 161, 0.08);
+}
+
+
+
