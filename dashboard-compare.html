@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Carbon Stock Comparison Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/Dashboard-compare.css">
+
+    <!-- Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="app">
+
+    <!-- ================= TOP BAR ================= -->
+    <div class="topbar">
+        <a href="compareAOI.html" class="back-btn">← Back</a>
+        <h2>Carbon Stock Comparison Dashboard</h2>
+    </div>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <div class="dashboard-container">
+
+        <!-- ================= HEADER CARD ================= -->
+        <div class="panel header-panel">
+            <h1>Carbon Stock Comparison Dashboard</h1>
+
+            <p class="meta">
+                AOI:
+                <strong id="aoiAddress"></strong>
+                (<span id="aoiArea"></span> km²)
+            </p>
+
+            <p class="meta">
+                Comparison:
+                <span id="periodA"></span>
+                vs
+                <span id="periodB"></span>
+            </p>
+        </div>
+
+        <!-- ================= MAP COMPARISON ================= -->
+        <div class="map-compare-row">
+
+            <div class="panel map-panel">
+                <h4 id="mapATitle"></h4>
+                <div id="mapA" class="map"></div>
+            </div>
+
+            <div class="panel map-panel">
+                <h4 id="mapBTitle"></h4>
+                <div id="mapB" class="map"></div>
+            </div>
+
+        </div>
+
+        <!-- ================= KPI COMPARISON ================= -->
+        <div class="kpi-compare-card">
+            <div class="panel">
+
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>KPI</th>
+                            <th id="labelA"></th>
+                            <th id="labelB"></th>
+                            <th>Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mean Tree Carbon (kg C)</td>
+                            <td id="meanA"></td>
+                            <td id="meanB"></td>
+                            <td id="meanDelta"></td>
+                        </tr>
+                        <tr>
+                            <td>Total Carbon (tonnes)</td>
+                            <td id="totalA"></td>
+                            <td id="totalB"></td>
+                            <td id="totalDelta"></td>
+                        </tr>
+                        <tr>
+                            <td>Carbon Density (kg C / ha)</td>
+                            <td id="densityA"></td>
+                            <td id="densityB"></td>
+                            <td id="densityDelta"></td>
+                        </tr>
+                        <tr>
+                            <td>Confidence Score</td>
+                            <td id="confA"></td>
+                            <td id="confB"></td>
+                            <td id="confDelta"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= JS ================= -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/dashboard-compare.js"></script>
+
+</body>
+</html>

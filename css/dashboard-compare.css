@@ -1,0 +1,381 @@
+/* ==================================================
+   CARBON STOCK COMPARISON DASHBOARD – FIXED
+================================================== */
+
+:root {
+    --bg-main: #0f1f1c;
+    --bg-panel: #162926;
+    --bg-panel-2: #1d3531;
+    --accent: #3cbfa1;
+    --text-main: #e6f4ef;
+    --text-muted: #9fbeb6;
+    --border-soft: rgba(255,255,255,0.08);
+}
+
+/* ==================================================
+   GLOBAL
+================================================== */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body.app {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: "Inter", system-ui, sans-serif;
+    overflow-y: auto;
+}
+
+/* ==================================================
+   TOP BAR
+================================================== */
+
+.topbar {
+    height: 56px;
+    background: var(--bg-panel);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.topbar h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.back-btn:hover {
+    color: var(--text-main);
+}
+
+/* ==================================================
+   DASHBOARD CONTAINER
+================================================== */
+
+.dashboard-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* ==================================================
+   HEADER
+================================================== */
+
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dashboard-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.dashboard-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ==================================================
+   MAP COMPARISON ROW
+================================================== */
+
+.map-compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Map panels */
+.map-panel {
+    background: #0b1412;
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Map titles */
+.map-panel h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 4px 0 10px;
+    color: var(--text-main);
+}
+
+/* ==================================================
+   LEAFLET MAPS (CRITICAL FIX)
+================================================== */
+
+#mapA,
+#mapB {
+    width: 100%;
+    height: 420px;        /* ❗ REQUIRED */
+    border-radius: 12px;
+    background: #0f1f1c;
+}
+
+/* ==================================================
+   LEGEND
+================================================== */
+
+.legend {
+    background: rgba(15,30,28,0.92);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #e6eef5;
+}
+
+/* ==================================================
+   KPI TABLE
+================================================== */
+
+.kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.kpi-table th,
+.kpi-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    text-align: left;
+    font-size: 13px;
+}
+
+.kpi-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.kpi-table td {
+    font-weight: 500;
+}
+
+.delta-up {
+    color: #66e09f;
+    font-weight: 600;
+}
+
+.delta-down {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+/* ==================================================
+   RESPONSIVE
+================================================== */
+
+@media (max-width: 1100px) {
+    .map-compare-row {
+        grid-template-columns: 1fr;
+    }
+
+    #mapA,
+    #mapB {
+        height: 360px;
+    }
+}
+/* ================= HEADER PANEL ================= */
+
+.header-panel h1 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.header-panel .meta {
+    margin: 4px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ================= MAP PANELS ================= */
+
+.map-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.map-panel h4 {
+    margin: 6px 8px 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ================= MAP HEIGHT ================= */
+
+.map {
+    height: 420px;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+
+/* ================= KPI TABLE ================= */
+
+.kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kpi-table th {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.kpi-table td {
+    font-size: 13px;
+    padding: 10px 6px;
+}
+
+.kpi-table tr:not(:last-child) td {
+    border-bottom: 1px solid var(--border-soft);
+}
+/* ================= MAP LEGEND ================= */
+.legend {
+    background: rgba(15, 28, 26, 0.92);
+    backdrop-filter: blur(6px);
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #e6f4ef;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.legend b {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.legend i {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+
+/* ================= MAP CARDS ================= */
+
+.map-card {
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.05),
+        rgba(255,255,255,0.02)
+    );
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.map-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dceae6;
+    padding-left: 6px;
+}
+.kpi-compare-card {
+    margin-top: 24px;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.05),
+        rgba(255,255,255,0.02)
+    );
+    border-radius: 18px;
+    padding: 18px 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.delta-up {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+.delta-down {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+.dashboard-header {
+    margin-bottom: 12px;
+}
+
+.dashboard-header h1,
+.dashboard-header h2 {
+    margin-bottom: 4px;
+}
+
+/* ================= KPI TABLE ALIGNMENT ================= */
+
+.kpi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kpi-table th,
+.kpi-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Left-align KPI labels */
+.kpi-table th:first-child,
+.kpi-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* Center ALL numeric columns */
+.kpi-table th:not(:first-child),
+.kpi-table td:not(:first-child) {
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Emphasise change column */
+.kpi-table td:last-child {
+    font-weight: 700;
+}
+
+/* Positive / negative deltas */
+.delta-up {
+    color: #3cff8f;
+}
+
+.delta-down {
+    color: #ff6b6b;
+}
+.kpi-table tbody tr:hover {
+    background: rgba(255,255,255,0.03);
+}
