@@ -379,3 +379,96 @@ body.app {
 .kpi-table tbody tr:hover {
     background: rgba(255,255,255,0.03);
 }
+/* ================= KPI FOOTNOTES ================= */
+
+.kpi-hint,
+.kpi-footnote {
+    margin: 12px auto 0 auto;
+    max-width: 680px;              /* ❗ prevents full-width dominance */
+    text-align: center;            /* ✅ center text */
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(230, 244, 239, 0.6);
+    font-weight: 400;
+}
+
+/* Visual separation from KPI table */
+.kpi-hint {
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Methodological note style */
+.kpi-footnote {
+    font-style: italic;
+    color: rgba(230, 244, 239, 0.5);
+}
+/* ================= DASHBOARD TITLE ================= */
+
+.header-panel h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;                 /* ⬆ stronger visual anchor */
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    color: #eaf6f2;
+
+    /* subtle emphasis */
+    background: linear-gradient(
+        90deg,
+        #eaf6f2 0%,
+        #b7e6da 60%,
+        #7ccfb8 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle / metadata under title */
+.header-panel .meta {
+    margin: 2px 0;
+    font-size: 13px;
+    color: rgba(230, 244, 239, 0.7);
+    font-weight: 500;
+}
+.header-panel {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 14px;
+}
+/* ================= CENTER HEADER TEXT ================= */
+
+.header-panel {
+    text-align: center;
+}
+
+/* Main title */
+.header-panel h1 {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* AOI + comparison metadata */
+.header-panel .meta {
+    text-align: center;
+    justify-content: center;
+}
+
+/* ================= CENTER MAP TITLES ================= */
+
+.map-panel h4 {
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+/* ================= CENTER KPI TABLE VALUES ================= */
+
+.kpi-table th,
+.kpi-table td {
+    text-align: center;
+}
+
+.kpi-table td:first-child,
+.kpi-table th:first-child {
+    text-align: left; /* keep KPI labels readable */
+}

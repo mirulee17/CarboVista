@@ -1,7 +1,7 @@
 // ================= LEAFLET AREA FORMATTER =================
 L.GeometryUtil.readableArea = function (area) {
     const km2 = area / 1e6;
-    const color = km2 > 0.7 ? "#ff4d4d" : "#2f7d32";
+    const color = km2 > 0.7 ? "#ff4d4d" : "#6ee7b7";
     return `<span style="color:${color};font-weight:600">
         Area: ${km2.toFixed(2)} km²
     </span>`;

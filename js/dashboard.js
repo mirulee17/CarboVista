@@ -12,12 +12,21 @@ if (!analysis || !analysis.geojson || !analysis.stats) {
 
 const stats = analysis.stats;
 const features = analysis.geojson.features;
+const CARBON_COLORS = {
+    veryLow: "#fdf5c9",   // 0–10
+    low:     "#f6e8a7",   // 10–20
+    lowMed:  "#a6d96a",   // 20–40
+    medium:  "#1a9850",   // 40–60
+    medHigh: "#fc8d59",   // 60–80
+    high:    "#d73027",   // 80–100
+    veryHigh:"#b30000",   // 100–120
+    extreme: "#7f0000"    // 120+
+};
 
 // =====================================================
 // MAP INITIALISATION
 // =====================================================
 const map = L.map("map");
-const canvasRenderer = L.canvas({ padding: 0.5 });
 
 // =====================================================
 // BASE MAP LAYERS
@@ -74,25 +83,16 @@ function getColor(carbonKg) {
                             "#fdf5c9"; // very low biomass
 }
 
-function getMarkerStyle(carbonKg, zoom) {
-    return {
-        radius:
-            zoom >= 15 ? 4 :
-            zoom >= 14 ? 3 :
-            zoom >= 13 ? 2 :
-                         1.2,
-
-        fillColor: getColor(carbonKg),
-
-        fillOpacity:
-            zoom >= 15 ? 0.9 :
-            zoom >= 14 ? 0.75 :
-            zoom >= 13 ? 0.55 :
-                         0.35,
-
-        stroke: false
-    };
+function pointStyle(feature, latlng) {
+    return L.circleMarker(latlng, {
+        radius: 4,
+        fillColor: getColor(feature.properties.carbon_kg),
+        color: "#111",
+        weight: 0.3,
+        fillOpacity: 0.8
+    });
 }
+
 
 function addAOIMask(bounds) {
     const outerBounds = [
@@ -114,7 +114,7 @@ function addAOIMask(bounds) {
         {
             color: "#000",
             fillColor: "#000",
-            fillOpacity: 0.4,
+            fillOpacity: 0.55,
             stroke: false,
             interactive: false
         }
@@ -140,11 +140,15 @@ document.getElementById("total").textContent =
 document.getElementById("count").textContent =
     stats.n_pixels;
 
-document.getElementById("vegetatedAreaHa").textContent =
-    stats.vegetated_area_ha.toFixed(1);
+// document.getElementById("vegetatedAreaHa").textContent =
+//     stats.vegetated_area_ha.toFixed(1);
 
-document.getElementById("vegetatedAreaKm2").textContent =
-    stats.vegetated_area_km2.toFixed(1);
+// document.getElementById("vegetatedAreaKm2").textContent =
+//     stats.vegetated_area_km2.toFixed(1);
+
+document.getElementById("carbonVariability").textContent =
+    stats.carbon_variability.toFixed(2);
+
 
 document.getElementById("confidenceScore").textContent =
     stats.confidence_score.toFixed(2);
@@ -171,28 +175,8 @@ document.getElementById("carbonValue").textContent =
 // GEOJSON LAYER
 // =====================================================
 const geoLayer = L.geoJSON(analysis.geojson, {
-    pointToLayer: (feature, latlng) => {
-        return L.circleMarker(
-            latlng,
-            getMarkerStyle(
-                feature.properties.carbon_kg,
-                map.getZoom()
-            )
-        );
-    }
+    pointToLayer: pointStyle
 }).addTo(map);
-
-map.on("zoomend", () => {
-    const zoom = map.getZoom();
-    geoLayer.eachLayer(layer => {
-        layer.setStyle(
-            getMarkerStyle(
-                layer.feature.properties.carbon_kg,
-                zoom
-            )
-        );
-    });
-});
 
 
 // ================= GIS LEGEND =================
@@ -224,8 +208,8 @@ setTimeout(() => {
 
     if (bounds.isValid()) {
         map.fitBounds(bounds, {
-            padding: [10, 10],
-            maxZoom: 16,
+            padding: [0, 0],
+            maxZoom: 17,
             animate: false,
         });
         addAOIMask(bounds);
@@ -269,12 +253,15 @@ new Chart(
             datasets: [{
                 data: histCounts,
                 backgroundColor: [
-                    "#fee8c8",
-                    "#fdbb84",
-                    "#fc8d59",
-                    "#e34a33",
-                    "#7f0000"
-                ]
+                    CARBON_COLORS.veryLow,   // < 25
+                    CARBON_COLORS.lowMed,    // 25–50
+                    CARBON_COLORS.medHigh,   // 50–75
+                    CARBON_COLORS.high,      // 75–100
+                    CARBON_COLORS.veryHigh   // > 100
+                ],
+                borderColor: "rgba(255,255,255,0.15)",
+                borderWidth: 1,
+                borderRadius: 6
             }]
         },
         options: {
@@ -313,17 +300,44 @@ new Chart(
             datasets: [{
                 data: [lowCount, medCount, highCount],
                 backgroundColor: [
-                    "#fbff00ff",
-                    "#00ff55ff",
-                    "#d73027"
-                ]
+                    CARBON_COLORS.low,   // Low
+                    CARBON_COLORS.medium,  // Medium
+                    CARBON_COLORS.high     // High
+                ],
+                borderColor: "rgba(15,31,28,0.35)",
+                borderWidth: 0,
+                borderJoinStyle: "round",
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // 🔧 REQUIRED
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: "bottom" }
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "#9fbeb6",
+                        boxWidth: 14,
+                        boxHeight: 14,
+                        padding: 14,
+                        font: {
+                            size: 12,
+                            weight: "500"
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const data = context.dataset.data;
+                            const total = data.reduce((a, b) => a + b, 0);
+                            const value = context.raw;
+                            const percent = ((value / total) * 100).toFixed(1);
+
+                            return `${context.label}: ${percent}% (${value} pixels)`;
+                        }
+                    }
+                }
             }
         }
     }
@@ -426,3 +440,10 @@ downloadPdfBtn.addEventListener("click", async () => {
         alert("PDF generation error");
     }
 });
+
+// =====================================================
+// KPI TOGGLE
+// =====================================================
+function toggleKpiInfo(card) {
+    card.classList.toggle("active");
+}

@@ -45,13 +45,44 @@ document.getElementById("labelB").textContent =
 function initMap(mapId) {
     const map = L.map(mapId, { zoomControl: true });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
+    // --- Base layers ---
+    const streetMap = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    );
+
+    const satelliteMap = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+        "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+            attribution:
+                "Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics"
+        }
+    );
+
+    // Default layer
+    streetMap.addTo(map);
+
+    // Layer toggle (per-map, independent)
+    L.control.layers(
+        {
+            "Street Map": streetMap,
+            "Satellite Map": satelliteMap
+        },
+        null,
+        {
+            position: "topright",
+            collapsed: false
+        }
+    ).addTo(map);
 
     map.fitBounds(aoiBounds, { padding: [20, 20] });
+
     return map;
 }
+
 
 const mapA = initMap("mapA");
 const mapB = initMap("mapB");
@@ -79,6 +110,34 @@ function pointStyle(feature, latlng) {
         fillOpacity: 0.8
     });
 }
+
+function addAOIMask(mapInstance, bounds) {
+    const outerBounds = [
+        [-90, -180],
+        [-90, 180],
+        [90, 180],
+        [90, -180]
+    ];
+
+    const hole = [
+        [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
+        [bounds.getSouthWest().lat, bounds.getNorthEast().lng],
+        [bounds.getNorthEast().lat, bounds.getNorthEast().lng],
+        [bounds.getNorthEast().lat, bounds.getSouthWest().lng]
+    ];
+
+    L.polygon(
+        [outerBounds, hole],
+        {
+            color: "#000",
+            fillColor: "#000",
+            fillOpacity: 0.55,   // slightly lighter for compare
+            stroke: false,
+            interactive: false
+        }
+    ).addTo(mapInstance);
+}
+
 // =====================================================
 // LEGEND FACTORY (REUSABLE)
 // =====================================================
@@ -106,25 +165,51 @@ function addLegend(mapInstance) {
 // =====================================================
 // ADD GEOJSON LAYERS
 // =====================================================
-L.geoJSON(analysisA.geojson, {
+const geoA = L.geoJSON(analysisA.geojson, {
     pointToLayer: pointStyle
 }).addTo(mapA);
 
-L.geoJSON(analysisB.geojson, {
+const geoB = L.geoJSON(analysisB.geojson, {
     pointToLayer: pointStyle
 }).addTo(mapB);
+
+// setTimeout(() => {
+    mapA.invalidateSize();
+    mapB.invalidateSize();
+
+    const boundsA = geoA.getBounds();
+    const boundsB = geoB.getBounds();
+
+    mapA.fitBounds(boundsA, { maxZoom: 17 });
+    mapB.fitBounds(boundsB, { maxZoom: 17 });
+
+    addAOIMask(mapA, boundsA);
+    addAOIMask(mapB, boundsB);
+// }, 300);
+
+
 // =====================================================
 // ADD LEGENDS TO BOTH MAPS
 // =====================================================
 addLegend(mapA);
 addLegend(mapB);
-mapA.on("move", () => {
-    mapB.setView(mapA.getCenter(), mapA.getZoom(), { animate: false });
-});
+let isSyncing = false;
 
-mapB.on("move", () => {
-    mapA.setView(mapB.getCenter(), mapB.getZoom(), { animate: false });
-});
+function syncMaps(source, target) {
+    if (isSyncing) return;
+    isSyncing = true;
+
+    target.setView(
+        source.getCenter(),
+        source.getZoom(),
+        { animate: false }
+    );
+
+    isSyncing = false;
+}
+
+mapA.on("moveend", () => syncMaps(mapA, mapB));
+mapB.on("moveend", () => syncMaps(mapB, mapA));
 
 // =====================================================
 // KPI HELPERS
@@ -181,3 +266,4 @@ document.getElementById("confDelta").textContent =
 document.getElementById("confDelta").className = deltaClass(confA, confB);
 
 console.log("✅ Comparison dashboard loaded successfully");
+
