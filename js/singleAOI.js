@@ -284,20 +284,20 @@ map.on(L.Draw.Event.CREATED, e => {
     };
 
     // 🔑 Store AOI polygon for backend
-const aoiPolygon = [[
-    [selectedAOI.west, selectedAOI.north],
-    [selectedAOI.east, selectedAOI.north],
-    [selectedAOI.east, selectedAOI.south],
-    [selectedAOI.west, selectedAOI.south],
-    [selectedAOI.west, selectedAOI.north]
-]];
+    const aoiPolygon = [[
+        [selectedAOI.west, selectedAOI.north],
+        [selectedAOI.east, selectedAOI.north],
+        [selectedAOI.east, selectedAOI.south],
+        [selectedAOI.west, selectedAOI.south],
+        [selectedAOI.west, selectedAOI.north]
+    ]];
 
-// 🔑 Always overwrite AOI
-localStorage.setItem("aoi", JSON.stringify(aoiPolygon));
+    // 🔑 Always overwrite AOI
+    localStorage.setItem("aoi", JSON.stringify(aoiPolygon));
 
-// 🔑 Clear any previous analysis tied to old AOI
-localStorage.removeItem("analysisResult");
-localStorage.removeItem("aoiBounds");
+    // 🔑 Clear any previous analysis tied to old AOI
+    localStorage.removeItem("analysisResult");
+    localStorage.removeItem("aoiBounds");
 
 
     isAOIValid = true;
