@@ -114,7 +114,7 @@ function addAOIMask(bounds) {
         {
             color: "#000",
             fillColor: "#000",
-            fillOpacity: 0.18,
+            fillOpacity: 0.4,
             stroke: false,
             interactive: false
         }
@@ -140,8 +140,11 @@ document.getElementById("total").textContent =
 document.getElementById("count").textContent =
     stats.n_pixels;
 
-document.getElementById("vegetatedArea").textContent =
+document.getElementById("vegetatedAreaHa").textContent =
     stats.vegetated_area_ha.toFixed(1);
+
+document.getElementById("vegetatedAreaKm2").textContent =
+    stats.vegetated_area_km2.toFixed(1);
 
 document.getElementById("confidenceScore").textContent =
     stats.confidence_score.toFixed(2);

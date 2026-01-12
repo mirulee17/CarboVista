@@ -233,6 +233,9 @@ def run_analysis():
         # Vegetated area (ha)
         # NOTE: Vegetation masking is applied upstream, so analysed area ≈ vegetated area
         vegetated_area_ha = area_ha
+        # Vegetated area in km² (for UI consistency)
+        vegetated_area_km2 = vegetated_area_ha / 100
+
 
         # Estimated number of vegetation pixels (10 m × 10 m)
         estimated_veg_pixels = (vegetated_area_ha * 10_000) / 100
@@ -300,6 +303,7 @@ def run_analysis():
 
             # Derived KPIs
             "vegetated_area_ha": round(vegetated_area_ha, 2),
+            "vegetated_area_km2": round(vegetated_area_km2, 3),
             "confidence_score": round(confidence_score, 2),
             "carbon_density": round(carbon_density, 2),
 
