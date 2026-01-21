@@ -171,3 +171,21 @@ body.app.compare {
     height: calc(100vh - 56px);
     width: 100%;
 }
+/* ==================================================
+LEAFLET TOOLTIP
+================================================== */
+.leaflet-draw-tooltip {
+    background: rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.leaflet-draw-tooltip-subtext {
+    color: #cccccc;
+    font-size: 11px;
+}
+.leaflet-draw-tooltip:before {
+    border-top-color: rgba(0, 0, 0, 0.85);
+}

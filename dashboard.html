@@ -12,74 +12,76 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/Dashboard.css">
 
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet">
 </head>
 
 <body class="app">
 
+<!-- TOP BAR -->
 <div class="topbar">
     <a href="AOI.html" class="back-btn">← Back</a>
     <h2>Biomass Analysis Dashboard</h2>
 </div>
 
-    <div class="dashboard-header header-row">
+<!-- DASHBOARD -->
+<div class="dashboard-container">
 
-        <div class="header-text">
-            <h3>Spatial Tree Carbon Prediction</h3>
-            <p id="headerMeta">
-            <span id="aoiAddress"></span> •
-            <strong><span id="aoiArea"></span> km²</strong> •
+    <!-- TITLE -->
+    <div class="dashboard-title">
+        <h1>Spatial Tree Carbon Prediction</h1>
+        <p class="dashboard-meta">
+            <span id="aoiAddress"></span>,
+            <span id="aoiArea"></span> km² •
             <span id="startDate"></span> → <span id="endDate"></span>
-            </p>
-        </div>
-
-        <button id="downloadCsv" class="btn-secondary">
-            ↓ Download CSV
-        </button>
-        <button id="downloadPdf" class="btn-secondary">
-            ↓ Download PDF Report
-        </button>
-
-
-        </div>
+        </p>
     </div>
-
-
 
     <!-- PRIMARY KPI ROW -->
     <div class="kpi-row">
 
-        <div class="kpi-card">
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
             <div class="kpi-title">Mean Tree Carbon</div>
             <div class="kpi-value">
                 <span id="mean">–</span>
                 <span class="kpi-unit">kg C</span>
             </div>
+            <div class="kpi-info">
+                Average estimated carbon stored per vegetation pixel within the AOI.
+            </div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
             <div class="kpi-title">Estimated Total Carbon</div>
             <div class="kpi-value">
                 <span id="total">–</span>
                 <span class="kpi-unit">t C</span>
             </div>
+            <div class="kpi-info">
+                Total carbon stock estimated for the entire AOI, scaled by vegetation coverage.
+            </div>
         </div>
 
-
-        <div class="kpi-card">
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
             <div class="kpi-title">Analysed Pixels</div>
             <div class="kpi-value">
                 <span id="count">–</span>
                 <span class="kpi-unit">pixels</span>
             </div>
+            <div class="kpi-info">
+                Number of vegetation pixels used in the analysis after filtering and masking.
+            </div>
         </div>
 
-        <div class="kpi-card">
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
             <div class="kpi-title">Carbon Range</div>
             <div class="kpi-value small">
                 <span id="min">–</span> – <span id="max">–</span>
                 <span class="kpi-unit">kg C</span>
+            </div>
+            <div class="kpi-info">
+                Minimum and maximum per-pixel carbon values detected within the AOI.
             </div>
         </div>
 
@@ -93,6 +95,7 @@
         </div>
 
         <div class="charts-column">
+
             <div class="panel">
                 <h4>Tree Carbon Distribution</h4>
                 <canvas id="acdHistogram"></canvas>
@@ -102,65 +105,65 @@
                 <h4>Carbon Class Breakdown</h4>
                 <canvas id="acdPie"></canvas>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <!-- SECONDARY KPI ROW -->
     <div class="kpi-row kpi-secondary">
 
-        <div class="kpi-card">
-            <div class="kpi-title">Vegetated Area</div>
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
+            <div class="kpi-title">Carbon Variability</div>
             <div class="kpi-value">
-                <span id="vegetatedAreaKm2">–</span>
-                <span class="kpi-unit">km²</span>
+                <span id="carbonVariability">–</span>
             </div>
-            <div class="kpi-sub">
-                (<span id="vegetatedAreaHa">–</span> ha)
+            <div class="kpi-info">
+                Indicates how uneven tree carbon values are across the AOI.
+                Higher values mean stronger contrast between low and high biomass areas.
             </div>
         </div>
 
-
-
-        <div class="kpi-card">
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
             <div class="kpi-title">Carbon Density</div>
             <div class="kpi-value">
                 <span id="carbonDensity">–</span>
                 <span class="kpi-unit">kg C / ha</span>
             </div>
+            <div class="kpi-info">
+                Carbon stock normalised by area, allowing comparison across different AOI sizes.
+            </div>
         </div>
 
-        <div class="kpi-card">
-            <div class="kpi-title">Prediction Confidence</div>
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
+            <div class="kpi-title">Prediction Stability</div>
             <div class="kpi-value">
                 <span id="confidenceScore">–</span>
-                <!-- <span class="kpi-unit">%</span> -->
             </div>
+            <div class="kpi-info">
+                Indicates consistency of Random Forest predictions. Higher values imply stronger agreement among trees and lower relative uncertainty.            </div>
         </div>
 
-        <div class="kpi-card">
-            <div class="kpi-title">
-                Indicative Carbon Value
-                <span title="Based on RM 50 per tCO₂e (reference only)">ⓘ</span>
-            </div>
+        <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
+            <div class="kpi-title">Indicative Carbon Value</div>
             <div class="kpi-value">
                 <span id="carbonValue">–</span>
                 <span class="kpi-unit">RM</span>
             </div>
+            <div class="kpi-info">
+                Reference monetary value based on estimated carbon stock,
+                using RM 15 per tonne of CO₂ equivalent (indicative only).
+            </div>
         </div>
-
 
     </div>
 
 </div>
-
 
 <!-- JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/dashboard.js"></script>
-
 
 </body>
 </html>

@@ -15,9 +15,27 @@ import csv
 import io
 from datetime import datetime
 from pdf_utils import build_pdf
+import hashlib
+import json
 
 from geopy.geocoders import Nominatim
 from gee_utils import init_ee, extract_s2_pixels
+# ------------------------------------------------------------
+# AOI ADDRESS CACHE (keyed by polygon hash)
+# ------------------------------------------------------------
+AOI_ADDRESS_CACHE = {}
+
+def aoi_hash(aoi_coords):
+    """
+    Stable hash for AOI polygon.
+    Returns None if AOI is invalid.
+    """
+    try:
+        aoi_str = json.dumps(aoi_coords, sort_keys=True)
+        return hashlib.md5(aoi_str.encode("utf-8")).hexdigest()
+    except Exception:
+        return None
+
 
 # ------------------------------------------------------------
 # COMPUTE AOI AREA
@@ -252,6 +270,9 @@ def run_analysis():
             if vegetated_area_ha > 0 else 0.0
         )
 
+        carbon_values = df["carbon_kg"].values
+        carbon_variability_norm = float(np.std(carbon_values) / np.mean(carbon_values))
+
         # --------------------------------------------------
         # CARBON VALUE (REFERENCE ONLY)
         # --------------------------------------------------
@@ -260,30 +281,40 @@ def run_analysis():
         co2e_tonnes = total_carbon_kg * 3.67 / 1000
 
         # Reference valuation (RM 50 / tCO₂e)
-        carbon_value_rm = co2e_tonnes * 50
+        carbon_value_rm = co2e_tonnes * 15
 
 
 
-        # AOI address (repeat logic safely)
+        # --------------------------------------------------
+        # AOI ADDRESS (SAFE, CACHED)
+        # --------------------------------------------------
         aoi_address = "Unknown location"
 
-        try:
-            coords = aoi_coords[0]
-            lons = [c[0] for c in coords]
-            lats = [c[1] for c in coords]
+        aoi_key = aoi_hash(aoi_coords)
 
-            lat_c = sum(lats) / len(lats)
-            lon_c = sum(lons) / len(lons)
+        if aoi_key and aoi_key in AOI_ADDRESS_CACHE:
+            aoi_address = AOI_ADDRESS_CACHE[aoi_key]
 
-            geolocator = Nominatim(user_agent="carbovista")
-            location = geolocator.reverse((lat_c, lon_c), zoom=14)
+        elif aoi_key:
+            try:
+                coords = aoi_coords[0]
+                lons = [c[0] for c in coords]
+                lats = [c[1] for c in coords]
 
-            if location and location.address:
-                aoi_address = location.address
+                lat_c = sum(lats) / len(lats)
+                lon_c = sum(lons) / len(lons)
 
-        except Exception as e:
-            print("⚠️ Reverse geocoding failed:", e)
+                geolocator = Nominatim(user_agent="carbovista")
+                location = geolocator.reverse((lat_c, lon_c), zoom=14)
 
+                if location and location.address:
+                    aoi_address = location.address
+
+            except Exception as e:
+                print("⚠️ Reverse geocoding failed:", e)
+
+            # Cache result (even if Unknown)
+            AOI_ADDRESS_CACHE[aoi_key] = aoi_address
 
         # --------------------------------------------------
         # Dashboard statistics
@@ -306,6 +337,7 @@ def run_analysis():
             "vegetated_area_km2": round(vegetated_area_km2, 3),
             "confidence_score": round(confidence_score, 2),
             "carbon_density": round(carbon_density, 2),
+            "carbon_variability": carbon_variability_norm,
 
             # AOI metadata
             "aoi_area_km2": round(area_km2, 3),

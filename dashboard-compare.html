@@ -37,13 +37,12 @@
             <h1>Carbon Stock Comparison Dashboard</h1>
 
             <p class="meta">
-                AOI:
+      
                 <strong id="aoiAddress"></strong>
                 (<span id="aoiArea"></span> km²)
             </p>
 
             <p class="meta">
-                Comparison:
                 <span id="periodA"></span>
                 vs
                 <span id="periodB"></span>
@@ -98,13 +97,23 @@
                             <td id="densityDelta"></td>
                         </tr>
                         <tr>
-                            <td>Confidence Score</td>
+                            <td>Stability Score</td>
                             <td id="confA"></td>
                             <td id="confB"></td>
                             <td id="confDelta"></td>
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- ================= INTERPRETATION HINT ================= -->
+                <p class="kpi-hint">
+                    Positive values indicate an increase from Period A to Period B.
+                </p>
+
+                <!-- ================= CONTEXT FOOTNOTE ================= -->
+                <p class="kpi-footnote">
+                    Estimates are derived from Sentinel-2 (10 m resolution) vegetation pixels within the selected AOI.
+                </p>
 
             </div>
         </div>
