@@ -135,13 +135,12 @@
         </div>
 
         <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
-            <div class="kpi-title">Prediction Confidence</div>
+            <div class="kpi-title">Prediction Stability</div>
             <div class="kpi-value">
                 <span id="confidenceScore">–</span>
             </div>
             <div class="kpi-info">
-                Indicates consistency of model predictions. Higher values imply lower uncertainty.
-            </div>
+                Indicates consistency of Random Forest predictions. Higher values imply stronger agreement among trees and lower relative uncertainty.            </div>
         </div>
 
         <div class="kpi-card kpi-clickable" onclick="toggleKpiInfo(this)">
@@ -152,7 +151,7 @@
             </div>
             <div class="kpi-info">
                 Reference monetary value based on estimated carbon stock,
-                using RM 50 per tonne of CO₂ equivalent (indicative only).
+                using RM 15 per tonne of CO₂ equivalent (indicative only).
             </div>
         </div>
 

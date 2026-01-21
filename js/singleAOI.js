@@ -274,6 +274,8 @@ map.on(L.Draw.Event.CREATED, e => {
 
     drawnItems.clearLayers();
     drawnItems.addLayer(layer);
+    // 🔴 Stop rectangle drawing mode
+    drawControl._toolbars.draw._modes.rectangle.handler.disable();
 
     selectedAOI = {
         north: bounds.getNorth(),
