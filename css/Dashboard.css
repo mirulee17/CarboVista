@@ -569,5 +569,73 @@ button:disabled:hover,
 .legend .c6  { background: #d73027; } /* 100–120 */
 .legend .c7  { background: #7f0000; } /* 120+ */
 
+/* ================= TOPBAR ACTION BUTTON (REFINED HOVER) ================= */
+
+.topbar-action-btn {
+    margin-left: auto;
+
+    background: linear-gradient(
+        135deg,
+        var(--accent-soft),
+        var(--accent)
+    );
+
+    color: #ffffff;
+    border: none;
+    border-radius: 999px;
+
+    padding: 9px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.22);
+
+    transition:
+        transform 0.16s cubic-bezier(.4,0,.2,1),
+        box-shadow 0.16s cubic-bezier(.4,0,.2,1),
+        background 0.16s ease,
+        opacity 0.15s ease;
+}
+
+/* 🌿 Hover — darker green, restrained glow */
+.topbar-action-btn:not(:disabled):hover {
+    background: linear-gradient(
+        135deg,
+        #1f7f6b,   /* darker teal */
+        #2a8f79
+    );
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.45),
+        0 0 10px rgba(60,191,161,0.25), /* subtle glow */
+        inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+/* 🔘 Active — firm press */
+.topbar-action-btn:not(:disabled):active {
+    transform: translateY(0);
+
+    box-shadow:
+        0 6px 14px rgba(0,0,0,0.4),
+        inset 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* 🚫 Disabled — unchanged */
+.topbar-action-btn:disabled {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+
 
 

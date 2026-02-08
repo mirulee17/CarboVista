@@ -346,29 +346,56 @@ new Chart(
 // =====================================================
 // DOWNLOAD CSV
 // =====================================================
-const downloadBtn = document.getElementById("downloadCsv");
+document.addEventListener("DOMContentLoaded", () => {
+    const downloadBtn = document.getElementById("downloadCsvBtn");
 
-if (downloadBtn) {
+    if (!downloadBtn) return;
+
     downloadBtn.addEventListener("click", async () => {
-        const res = await fetch("http://127.0.0.1:5000/download-csv", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                aoi: JSON.parse(localStorage.getItem("aoi")),
-                start_date: localStorage.getItem("startDate"),
-                end_date: localStorage.getItem("endDate")
-            })
-        });
 
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
+        const aoi = localStorage.getItem("aoi");
+        const startDate = localStorage.getItem("startDate");
+        const endDate = localStorage.getItem("endDate");
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "carbovista_pixel_predictions.csv";
-        a.click();
+        if (!aoi || !startDate || !endDate) {
+            alert("Analysis data missing. Please re-run analysis.");
+            return;
+        }
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/download-csv", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    aoi: JSON.parse(aoi),
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || "CSV download failed");
+            }
+
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "carbovista_pixel_predictions.csv";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+
+            window.URL.revokeObjectURL(url);
+
+        } catch (err) {
+            alert(err.message);
+        }
     });
-}
+});
+
 
 
 // =====================================================
