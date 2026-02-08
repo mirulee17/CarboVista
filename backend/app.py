@@ -62,7 +62,10 @@ def compute_aoi_area_km2(aoi_coords):
 # 1️⃣ Initialize Flask + Earth Engine
 # ------------------------------------------------------------
 app = Flask(__name__)
-CORS(app)
+CORS(
+    app,
+    expose_headers=["Content-Disposition"]
+)
 
 init_ee()
 
@@ -366,7 +369,21 @@ def download_csv():
         start_date = payload.get("start_date")
         end_date = payload.get("end_date")
 
-        # Re-run analysis (or reuse cached result if you later add caching)
+        if not aoi_coords or not start_date or not end_date:
+            return jsonify({"error": "Missing AOI or date range"}), 400
+
+        # --------------------------------------------------
+        # AOI size enforcement (same as /run-analysis)
+        # --------------------------------------------------
+        area_km2 = compute_aoi_area_km2(aoi_coords)
+        if area_km2 > 2.0:
+            return jsonify({
+                "error": f"AOI too large ({area_km2:.2f} km²). Max is 2.0 km²."
+            }), 400
+
+        # --------------------------------------------------
+        # Extract pixels
+        # --------------------------------------------------
         fc = extract_s2_pixels(
             aoi_coords=aoi_coords,
             start_date=start_date,
@@ -375,6 +392,9 @@ def download_csv():
 
         fc_info = fc.getInfo()
         features = fc_info.get("features", [])
+
+        if len(features) == 0:
+            return jsonify({"error": "No vegetation pixels found"}), 400
 
         rows = []
         for f in features:
@@ -387,9 +407,18 @@ def download_csv():
             rows.append(row)
 
         df = pd.DataFrame(rows).dropna()
+
+        if df.empty:
+            return jsonify({"error": "All pixels invalid after filtering"}), 400
+
+        # --------------------------------------------------
+        # Predict carbon
+        # --------------------------------------------------
         df["carbon_kg"] = rf_model.predict(df[FEATURES].values)
 
+        # --------------------------------------------------
         # Carbon class
+        # --------------------------------------------------
         def classify(v):
             if v >= 60: return "High"
             if v >= 30: return "Medium"
@@ -397,57 +426,43 @@ def download_csv():
 
         df["carbon_class"] = df["carbon_kg"].apply(classify)
 
-        # ---- KPIs ----
-        n_total_pixels = len(features)
-        n_valid_pixels = len(df)
-        vegetation_coverage = (n_valid_pixels / n_total_pixels) * 100
-        confidence = float(
-            np.exp(-df["carbon_kg"].std() / df["carbon_kg"].mean())
-        )
+        # --------------------------------------------------
+        # KPIs (SAFE)
+        # --------------------------------------------------
+        mean_carbon = df["carbon_kg"].mean()
+        std_carbon = df["carbon_kg"].std()
 
-        # ---- AOI area ----
-        area_km2 = compute_aoi_area_km2(aoi_coords)
+        if mean_carbon > 0:
+            confidence = float(np.exp(-std_carbon / mean_carbon))
+        else:
+            confidence = 0.0
 
-        # ---- AOI address ----
+        confidence = round(max(0.0, min(confidence, 1.0)), 2)
+
+        # --------------------------------------------------
+        # AOI address (cached)
+        # --------------------------------------------------
         aoi_address = "Unknown location"
+        aoi_key = aoi_hash(aoi_coords)
 
-        try:
-            coords = aoi_coords[0]
-            lons = [c[0] for c in coords]
-            lats = [c[1] for c in coords]
+        if aoi_key and aoi_key in AOI_ADDRESS_CACHE:
+            aoi_address = AOI_ADDRESS_CACHE[aoi_key]
 
-            lat_c = sum(lats) / len(lats)
-            lon_c = sum(lons) / len(lons)
-
-            geolocator = Nominatim(user_agent="carbovista")
-            location = geolocator.reverse((lat_c, lon_c), zoom=14)
-
-            if location and location.address:
-                aoi_address = location.address
-
-        except Exception as e:
-            print("⚠️ Reverse geocoding failed:", e)
-
-        # ---- CSV creation ----
+        # --------------------------------------------------
+        # CSV creation
+        # --------------------------------------------------
         output = io.StringIO()
         writer = csv.writer(output)
 
-        # Metadata header
         writer.writerow(["# CarboVista — Spatial Tree Carbon Prediction"])
-        writer.writerow([f"# Generated,{datetime.utcnow()}"])
-        writer.writerow([f"# Date Start,{start_date}"])
-        writer.writerow([f"# Date End,{end_date}"])
+        writer.writerow([f"# Generated (UTC),{datetime.utcnow()}"])
         writer.writerow([f"# AOI Location,{aoi_address}"])
         writer.writerow([f"# AOI Area (km²),{area_km2:.3f}"])
-        writer.writerow([])
-        writer.writerow([f"# Analysed Pixels,{n_valid_pixels}"])
-        writer.writerow([f"# Mean Tree Carbon (kg C),{df['carbon_kg'].mean():.2f}"])
-        writer.writerow([f"# Sampled Carbon (kg C),{df['carbon_kg'].sum():.2f}"])
-        writer.writerow([f"# Vegetation Coverage (%),{vegetation_coverage:.1f}"])
-        writer.writerow([f"# Prediction Confidence,{confidence:.2f}"])
+        writer.writerow([f"# Analysed Pixels,{len(df)}"])
+        writer.writerow([f"# Mean Tree Carbon (kg C),{mean_carbon:.2f}"])
+        writer.writerow([f"# Prediction Confidence,{confidence}"])
         writer.writerow([])
 
-        # Table header
         writer.writerow([
             "pixel_id",
             "latitude",
@@ -456,7 +471,6 @@ def download_csv():
             "carbon_class"
         ])
 
-        # Data rows
         for i, r in df.iterrows():
             writer.writerow([
                 i + 1,
@@ -477,6 +491,7 @@ def download_csv():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 # ------------------------------------------------------------
