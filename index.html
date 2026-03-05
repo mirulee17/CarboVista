@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tiemos-style substitute for headline -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/tree_logo2.png">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -19,8 +20,10 @@
 
     <!-- NAVBAR -->
     <header class="navbar">
-        <h1>CarboVista</h1>
-    </header>
+    <span class="nav-title">CarboVista</span>
+</header>
+
+
 
     <!-- HERO SECTION -->
     <section class="landing-hero">
@@ -35,7 +38,7 @@
 
             <p class="hero-description">
                 Discover how urban trees contribute to carbon storage.
-                This interactive system combines satellite imagery with a Random Forest model
+                This interactive system combines satellite imagery with an ensemble model
                 to estimate tree biomass, visualise spatial carbon patterns,
                 and compare conditions across different areas and observation periods.
             </p>
@@ -66,16 +69,139 @@
 
     </section>
 
-    <!-- PROJECT OVERVIEW (CENTRALIZED) -->
-    <section class="info landing-overview">
-        <h3>Project Overview</h3>
+<section class="stats-section reveal">
+    <div class="stats-header">
+        <h3>Why Urban Tree Carbon Matters</h3>
         <p>
-            This web application allows users to define an Area of Interest (AOI)
-            using a bounding box on satellite imagery and estimate aboveground
-            biomass based on Sentinel-2 data for environmental and forestry
-            analysis.
+            Key environmental realities highlight the need for scalable,
+            data-driven urban tree carbon monitoring.
         </p>
-    </section>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-value" data-target="76">0%</div>
+            <div class="stat-title">Urban Population</div>
+            <p class="stat-desc">
+                Over <b>76% of Malaysians</b> live in urban areas, increasing pressure
+                on green spaces and urban ecosystems.
+            </p>
+            <span class="stat-source">
+                Department of Statistics Malaysia
+            </span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value" data-target="4">0°C</div>
+            <div class="stat-title">Urban Cooling Effect</div>
+            <p class="stat-desc">
+                Urban trees can reduce land surface temperatures by
+                <b>2–4°C</b>, mitigating urban heat-island effects.
+            </p>
+            <span class="stat-source">
+                IPCC · Urban Climate Studies
+            </span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value" data-target="30">0%</div>
+            <div class="stat-title">Carbon Offset Potential</div>
+            <p class="stat-desc">
+                Dense urban vegetation can offset up to
+                <b>30% of local carbon emissions</b> in city zones.
+            </p>
+            <span class="stat-source">
+                FAO · Urban Forestry Research
+            </span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-value" data-target="10">0 m</div>
+            <div class="stat-title">Satellite Resolution</div>
+            <p class="stat-desc">
+                Sentinel-2 provides <b>10-metre spatial resolution</b>,
+                enabling repeatable, city-scale monitoring.
+            </p>
+            <span class="stat-source">
+                ESA Sentinel-2 Mission
+            </span>
+        </div>
+
+    </div>
+</section>
+
+
+
+<section class="feature-expand-section reveal">
+
+    <div class="feature-layout">
+
+        <!-- LEFT TEXT -->
+        <div class="feature-intro">
+            <h3>What Does CarboVista Do?</h3>
+            <p>
+                CarboVista integrates satellite imagery and machine learning
+                to estimate, analyse, and visualise urban tree carbon stocks
+                at city scale.
+            </p>
+        </div>
+
+        <!-- RIGHT CARDS -->
+        <div class="feature-cards">
+
+            <div class="expand-card">
+                <img src="images/satellite.jpg" alt="Satellite imagery">
+                <div class="expand-content">
+                    <h4>Satellite Imagery</h4>
+                    <p>
+                        Sentinel-2 multispectral imagery captures vegetation
+                        reflectance and canopy structure across urban areas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="expand-card">
+                <img src="images/ml.jpg" alt="Machine learning">
+                <div class="expand-content">
+                    <h4>Machine Learning</h4>
+                    <p>
+                        An ensemble learning model predicts pixel-level
+                        aboveground carbon density from spectral features.
+                    </p>
+                </div>
+            </div>
+
+            <div class="expand-card">
+                <img src="images/map.jpg" alt="Spatial visualisation">
+                <div class="expand-content">
+                    <h4>Spatial Visualisation</h4>
+                    <p>
+                        Carbon estimates are mapped spatially to reveal
+                        patterns, hotspots, and urban variability.
+                    </p>
+                </div>
+            </div>
+<div class="expand-card">
+    <img src="images/change-detection.jpg" alt="Change detection">
+    <div class="expand-content">
+        <h4>Change Detection</h4>
+        <p>
+            Compare urban tree carbon stocks across different time periods
+            to identify gains, losses, and long-term vegetation trends.
+        </p>
+    </div>
+</div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</section>
+
 
     <!-- FLOATING ACTION BUTTON -->
     <a href="AOI.html" class="fab-launch">
@@ -86,9 +212,66 @@
     <footer class="footer">
         <p>
             Final Year Project | Bachelor of Computer Science (Hons)<br>
-            © 2025 Biomass Estimation System
+            © 2025 Pixel-Level Estimation of Urban Tree Carbon Stock using Ensemble Machine Learning
         </p>
     </footer>
+<script>
+const counters = document.querySelectorAll(".stat-value");
+
+const animateCounter = (el) => {
+    const target = parseInt(el.dataset.target, 10);
+    const suffixMatch = el.textContent.match(/[^\d]+$/);
+    const suffix = suffixMatch ? suffixMatch[0] : "";
+
+    let start = 0;
+    const duration = 1200;
+    const startTime = performance.now();
+
+    const update = (now) => {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const value = Math.floor(eased * target);
+        el.textContent = value + suffix;
+
+        if (progress < 1) requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
+};
+
+const observer = new IntersectionObserver(
+    entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    },
+    { threshold: 0.4 }
+);
+
+counters.forEach(el => observer.observe(el));
+</script>
+<script>
+const revealEls = document.querySelectorAll('.reveal');
+
+const revealObserver = new IntersectionObserver(
+    entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    },
+    { threshold: 0.15 }
+);
+
+revealEls.forEach(el => revealObserver.observe(el));
+</script>
+
+
 
 </body>
 </html>

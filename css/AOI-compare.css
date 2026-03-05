@@ -89,13 +89,6 @@ body.app.compare {
     margin-top: 6px;
 }
 
-/* ==================================================
-   RUN BUTTON
-================================================== */
-
-.app.compare .btn.run-compare {
-    margin-top: auto;
-}
 
 /* ==================================================
    MAP COMPARISON VIEW
@@ -189,3 +182,4 @@ LEAFLET TOOLTIP
 .leaflet-draw-tooltip:before {
     border-top-color: rgba(0, 0, 0, 0.85);
 }
+

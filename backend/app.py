@@ -283,7 +283,7 @@ def run_analysis():
         # Convert to CO₂ equivalent (tonnes)
         co2e_tonnes = total_carbon_kg * 3.67 / 1000
 
-        # Reference valuation (RM 50 / tCO₂e)
+        # Reference valuation (RM 15 / tCO₂e)
         carbon_value_rm = co2e_tonnes * 15
 
 
